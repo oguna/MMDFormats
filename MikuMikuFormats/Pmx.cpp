@@ -16,11 +16,23 @@ namespace pmx
 		case 1:
 			uint8_t tmp8;
 			stream->read((char*) &tmp8, sizeof(uint8_t));
-			return (int) tmp8;
+			if (255 == tmp8)
+			{
+				return -1;
+			}
+			else {
+				return (int) tmp8;
+			}
 		case 2:
 			uint16_t tmp16;
 			stream->read((char*) &tmp16, sizeof(uint16_t));
-			return (int) tmp16;
+			if (65535 == tmp16)
+			{
+				return -1;
+			}
+			else {
+				return (int) tmp16;
+			}
 		case 4:
 			int tmp32;
 			stream->read((char*) &tmp32, sizeof(int));
