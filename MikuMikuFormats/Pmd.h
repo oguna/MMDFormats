@@ -381,9 +381,9 @@ namespace pmd
 		/// 名前
 		std::string name;
 		/// 剛体Aのインデックス
-		uint16_t rigid_body_index_a;
+		uint32_t rigid_body_index_a;
 		/// 剛体Bのインデックス
-		uint16_t rigid_body_index_b;
+		uint32_t rigid_body_index_b;
 		/// 位置
 		float position[3];
 		/// 回転
@@ -406,8 +406,8 @@ namespace pmd
 			char buffer[20];
 			stream->read(buffer, 20);
 			name = std::string(buffer);
-			stream->read((char *) &rigid_body_index_a, sizeof(uint16_t));
-			stream->read((char *) &rigid_body_index_b, sizeof(uint16_t));
+			stream->read((char *) &rigid_body_index_a, sizeof(uint32_t));
+			stream->read((char *) &rigid_body_index_b, sizeof(uint32_t));
 			stream->read((char *) position, sizeof(float) * 3);
 			stream->read((char *) orientation, sizeof(float) * 3);
 			stream->read((char *) linear_lower_limit, sizeof(float) * 3);
