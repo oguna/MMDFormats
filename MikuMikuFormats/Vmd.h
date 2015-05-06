@@ -192,7 +192,7 @@ namespace vmd
 			int bone_frame_num;
 			stream->read((char*) &bone_frame_num, sizeof(int));
 			result->bone_frames.resize(bone_frame_num);
-			for (uint16_t i = 0; i < bone_frame_num; i++)
+			for (int i = 0; i < bone_frame_num; i++)
 			{
 				result->bone_frames[i].Read(stream);
 			}
@@ -228,7 +228,7 @@ namespace vmd
 			stream->read(buffer, 4);
 
 			// ik frames
-			if (!stream->eof())
+			if (stream->peek() != std::ios::traits_type::eof())
 			{
 				int ik_num;
 				stream->read((char*) &ik_num, sizeof(int));
@@ -239,7 +239,7 @@ namespace vmd
 				}
 			}
 
-			if (!stream->eof())
+			if (stream->peek() != std::ios::traits_type::eof())
 			{
 				std::cerr << "vmd stream has unknown data." << std::endl;
 			}
