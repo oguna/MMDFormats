@@ -38,7 +38,7 @@ namespace pmx
 			stream->read((char*) &tmp32, sizeof(int));
 			return tmp32;
 		default:
-			throw;
+			return -1;
 		}
 	}
 
@@ -73,7 +73,7 @@ namespace pmx
 	{
 		uint8_t count;
 		stream->read((char*) &count, sizeof(uint8_t));
-		if (count != 8)
+		if (count < 8)
 		{
 			throw;
 		}
@@ -85,6 +85,11 @@ namespace pmx
 		stream->read((char*) &bone_index_size, sizeof(uint8_t));
 		stream->read((char*) &morph_index_size, sizeof(uint8_t));
 		stream->read((char*) &rigidbody_index_size, sizeof(uint8_t));
+		uint8_t temp;
+		for (int i = 8; i < count; i++)
+		{
+			stream->read((char*)&temp, sizeof(uint8_t));
+		}
 	}
 
 	void PmxVertexSkinningBDEF1::Read(std::istream *stream, PmxSetting *setting)
@@ -159,6 +164,7 @@ namespace pmx
 			break;
 		case PmxVertexSkinningType::QDEF:
 			this->skinning = std::make_unique<PmxVertexSkinningQDEF>();
+			break;
 		default:
 			throw "invalid skinning type";
 		}
@@ -557,16 +563,16 @@ namespace pmx
 			this->joints[i].Read(stream, &setting);
 		}
 
-		// ソフトボディ
-		if (this->version == 2.1f)
-		{
-			stream->read((char*) &this->soft_body_count, sizeof(int));
-			this->soft_bodies = std::make_unique<PmxSoftBody []>(this->soft_body_count);
-			for (int i = 0; i < this->soft_body_count; i++)
-			{
-				this->soft_bodies[i].Read(stream, &setting);
-			}
-		}
+		//// ソフトボディ
+		//if (this->version == 2.1f)
+		//{
+		//	stream->read((char*) &this->soft_body_count, sizeof(int));
+		//	this->soft_bodies = std::make_unique<PmxSoftBody []>(this->soft_body_count);
+		//	for (int i = 0; i < this->soft_body_count; i++)
+		//	{
+		//		this->soft_bodies[i].Read(stream, &setting);
+		//	}
+		//}
 	}
 
 	//std::unique_ptr<PmxModel> ReadFromFile(const char *filename)
