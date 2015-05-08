@@ -426,7 +426,7 @@ namespace pmd
 		float version;
 		PmdHeader header;
 		std::vector<PmdVertex> vertices;
-		std::vector<uint8_t> indices;
+		std::vector<uint16_t> indices;
 		std::vector<PmdMaterial> materials;
 		std::vector<PmdBone> bones;
 		std::vector<PmdIk> iks;
