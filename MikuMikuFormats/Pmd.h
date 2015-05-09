@@ -131,9 +131,11 @@ namespace pmd
 	enum class BoneType : uint8_t
 	{
 		Rotation,
-		Rotation_Linear,
+		RotationAndMove,
 		IkEffector,
+		Unknown,
 		IkEffectable,
+		RotationEffectable,
 		IkTarget,
 		Invisible,
 		Twist,
