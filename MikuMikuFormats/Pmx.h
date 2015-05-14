@@ -12,8 +12,20 @@
 namespace pmx
 {
 	/// インデックス設定
-	struct PmxSetting
+	class PmxSetting
 	{
+	public:
+		PmxSetting()
+			: encoding(0)
+			, uv(0)
+			, vertex_index_size(0)
+			, texture_index_size(0)
+			, material_index_size(0)
+			, bone_index_size(0)
+			, morph_index_size(0)
+			, rigidbody_index_size(0)
+		{}
+
 		/// エンコード方式
 		uint8_t encoding;
 		/// 追加UV数
@@ -44,7 +56,7 @@ namespace pmx
 	};
 
 	/// 頂点スキニング
-	struct PmxVertexSkinning
+	class PmxVertexSkinning
 	{
 	public:
 		virtual void Read(std::istream *stream, PmxSetting *setting) = 0;
@@ -53,6 +65,10 @@ namespace pmx
 	class PmxVertexSkinningBDEF1 : public PmxVertexSkinning
 	{
 	public:
+		PmxVertexSkinningBDEF1()
+			: bone_index(0)
+		{}
+
 		int bone_index;
 		void Read(std::istream *stresam, PmxSetting *setting);
 	};
@@ -60,6 +76,12 @@ namespace pmx
 	class PmxVertexSkinningBDEF2 : public PmxVertexSkinning
 	{
 	public:
+		PmxVertexSkinningBDEF2()
+			: bone_index1(0)
+			, bone_index2(0)
+			, bone_weight(0.0f)
+		{}
+
 		int bone_index1;
 		int bone_index2;
 		float bone_weight;
@@ -69,6 +91,17 @@ namespace pmx
 	class PmxVertexSkinningBDEF4 : public PmxVertexSkinning
 	{
 	public:
+		PmxVertexSkinningBDEF4()
+			: bone_index1(0)
+			, bone_index2(0)
+			, bone_index3(0)
+			, bone_index4(0)
+			, bone_weight1(0.0f)
+			, bone_weight2(0.0f)
+			, bone_weight3(0.0f)
+			, bone_weight4(0.0f)
+		{}
+
 		int bone_index1;
 		int bone_index2;
 		int bone_index3;
@@ -83,6 +116,18 @@ namespace pmx
 	class PmxVertexSkinningSDEF : public PmxVertexSkinning
 	{
 	public:
+		PmxVertexSkinningSDEF()
+			: bone_index1(0)
+			, bone_index2(0)
+			, bone_weight(0.0f)
+		{
+			for (int i = 0; i < 3; ++i) {
+				sdef_c[i] = 0.0f;
+				sdef_r0[i] = 0.0f;
+				sdef_r1[i] = 0.0f;
+			}
+		}
+
 		int bone_index1;
 		int bone_index2;
 		float bone_weight;
@@ -95,6 +140,17 @@ namespace pmx
 	class PmxVertexSkinningQDEF : public PmxVertexSkinning
 	{
 	public:
+		PmxVertexSkinningQDEF()
+			: bone_index1(0)
+			, bone_index2(0)
+			, bone_index3(0)
+			, bone_index4(0)
+			, bone_weight1(0.0f)
+			, bone_weight2(0.0f)
+			, bone_weight3(0.0f)
+			, bone_weight4(0.0f)
+		{}
+
 		int bone_index1;
 		int bone_index2;
 		int bone_index3;
@@ -107,8 +163,24 @@ namespace pmx
 	};
 
 	/// 頂点
-	struct PmxVertex
+	class PmxVertex
 	{
+	public:
+		PmxVertex()
+			: edge(0.0f)
+		{
+			uv[0] = uv[1] = 0.0f;
+			for (int i = 0; i < 3; ++i) {
+				positon[i] = 0.0f;
+				normal[i] = 0.0f;
+			}
+			for (int i = 0; i < 4; ++i) {
+				for (int k = 0; k < 4; ++k) {
+					uva[i][k] = 0.0f;
+				}
+			}
+		}
+
 		/// 位置
 		float positon[3];
 		/// 法線
@@ -127,8 +199,30 @@ namespace pmx
 	};
 
 	/// マテリアル
-	struct PmxMaterial
+	class PmxMaterial
 	{
+	public:
+		PmxMaterial()
+			: specularlity(0.0f)
+			, flag(0)
+			, edge_size(0.0f)
+			, diffuse_texture_index(0)
+			, sphere_texture_index(0)
+			, sphere_op_mode(0)
+			, common_toon_flag(0)
+			, toon_texture_index(0)
+			, index_count(0)
+		{
+			for (int i = 0; i < 3; ++i) {
+				specular[i] = 0.0f;
+				ambient[i] = 0.0f;
+				edge_color[i] = 0.0f;
+			}
+			for (int i = 0; i < 4; ++i) {
+				diffuse[i] = 0.0f;
+			}
+		}
+
 		/// モデル名
 		std::wstring material_name;
 		/// モデル英名
@@ -165,8 +259,19 @@ namespace pmx
 	};
 
 	/// リンク
-	struct PmxIkLink
+	class PmxIkLink
 	{
+	public:
+		PmxIkLink()
+			: link_target(0)
+			, angle_lock(0)
+		{
+			for (int i = 0; i < 3; ++i) {
+				max_radian[i] = 0.0f;
+				min_radian[i] = 0.0f;
+			}
+		}
+
 		/// リンクボーンインデックス
 		int link_target;
 		/// 角度制限
@@ -179,8 +284,31 @@ namespace pmx
 	};
 
 	/// ボーン
-	struct PmxBone
+	class PmxBone
 	{
+	public:
+		PmxBone()
+			: parent_index(0)
+			, level(0)
+			, bone_flag(0)
+			, target_index(0)
+			, grant_parent_index(0)
+			, grant_weight(0.0f)
+			, key(0)
+			, ik_target_bone_index(0)
+			, ik_loop(0)
+			, ik_loop_angle_limit(0.0f)
+			, ik_link_count(0)
+		{
+			for (int i = 0; i < 3; ++i) {
+				position[i] = 0.0f;
+				offset[i] = 0.0f;
+				lock_axis_orientation[i] = 0.0f;
+				local_axis_x_orientation[i] = 0.0f;
+				local_axis_y_orientation[i] = 0.0f;
+			}
+		}
+
 		/// ボーン名
 		std::wstring bone_name;
 		/// ボーン英名
@@ -246,35 +374,80 @@ namespace pmx
 		Other = 4,
 	};
 
-	struct PmxMorphOffset
+	class PmxMorphOffset
 	{
+	public:
 		void virtual Read(std::istream *stream, PmxSetting *setting) = 0;
 	};
 
-	struct PmxMorphVertexOffset : public PmxMorphOffset
+	class PmxMorphVertexOffset : public PmxMorphOffset
 	{
+	public:
+		PmxMorphVertexOffset()
+			: vertex_index(0)
+		{
+			for (int i = 0; i < 3; ++i) {
+				position_offset[i] = 0.0f;
+			}
+		}
 		int vertex_index;
 		float position_offset[3];
 		void Read(std::istream *stream, PmxSetting *setting) override;
 	};
 
-	struct PmxMorphUVOffset : public PmxMorphOffset
+	class PmxMorphUVOffset : public PmxMorphOffset
 	{
+	public:
+		PmxMorphUVOffset()
+			: vertex_index(0)
+		{
+			for (int i = 0; i < 4; ++i) {
+				uv_offset[i] = 0.0f;
+			}
+		}
 		int vertex_index;
 		float uv_offset[4];
 		void Read(std::istream *stream, PmxSetting *setting) override;
 	};
 
-	struct PmxMorphBoneOffset : public PmxMorphOffset
+	class PmxMorphBoneOffset : public PmxMorphOffset
 	{
+	public:
+		PmxMorphBoneOffset()
+			: bone_index(0)
+		{
+			for (int i = 0; i < 3; ++i) {
+				translation[i] = 0.0f;
+			}
+			for (int i = 0; i < 4; ++i) {
+				rotation[i] = 0.0f;
+			}
+		}
 		int bone_index;
 		float translation[3];
 		float rotation[4];
 		void Read(std::istream *stream, PmxSetting *setting) override;
 	};
 
-	struct PmxMorphMaterialOffset : public PmxMorphOffset
+	class PmxMorphMaterialOffset : public PmxMorphOffset
 	{
+	public:
+		PmxMorphMaterialOffset()
+			: specularity(0.0f)
+			, edge_size(0.0f)
+		{
+			for (int i = 0; i < 3; ++i) {
+				specular[i] = 0.0f;
+				ambient[i] = 0.0f;
+			}
+			for (int i = 0; i < 4; ++i) {
+				diffuse[i] = 0.0f;
+				edge_color[i] = 0.0f;
+				texture_argb[i] = 0.0f;
+				sphere_texture_argb[i] = 0.0f;
+				toon_texture_argb[i] = 0.0f;
+			}
+		}
 		int material_index;
 		uint8_t offset_operation;
 		float diffuse[4];
@@ -289,22 +462,42 @@ namespace pmx
 		void Read(std::istream *stream, PmxSetting *setting) override;
 	};
 
-	struct PmxMorphGroupOffset : public PmxMorphOffset
+	class PmxMorphGroupOffset : public PmxMorphOffset
 	{
+	public:
+		PmxMorphGroupOffset()
+			: morph_index(0)
+			, morph_weight(0.0f)
+		{}
 		int morph_index;
 		float morph_weight;
 		void Read(std::istream *stream, PmxSetting *setting) override;
 	};
 
-	struct PmxMorphFlipOffset : public PmxMorphOffset
+	class PmxMorphFlipOffset : public PmxMorphOffset
 	{
+	public:
+		PmxMorphFlipOffset()
+			: morph_index(0)
+			, morph_value(0.0f)
+		{}
 		int morph_index;
 		float morph_value;
 		void Read(std::istream *stream, PmxSetting *setting) override;
 	};
 
-	struct PmxMorphImplusOffset : public PmxMorphOffset
+	class PmxMorphImplusOffset : public PmxMorphOffset
 	{
+	public:
+		PmxMorphImplusOffset()
+			: rigid_body_index(0)
+			, is_local(0)
+		{
+			for (int i = 0; i < 3; ++i) {
+				velocity[i] = 0.0f;
+				angular_torque[i] = 0.0f;
+			}
+		}
 		int rigid_body_index;
 		uint8_t is_local;
 		float velocity[3];
@@ -313,8 +506,13 @@ namespace pmx
 	};
 
 	/// モーフ
-	struct PmxMorph
+	class PmxMorph
 	{
+	public:
+		PmxMorph()
+			: offset_count(0)
+		{
+		}
 		/// モーフ名
 		std::wstring morph_name;
 		/// モーフ英名
@@ -343,8 +541,14 @@ namespace pmx
 	};
 
 	/// 枠内要素
-	struct PmxFrameElement
+	class PmxFrameElement
 	{
+	public:
+		PmxFrameElement()
+			: element_target(0)
+			, index(0)
+		{
+		}
 		/// 要素対象
 		uint8_t element_target;
 		/// 要素対象インデックス
@@ -353,8 +557,14 @@ namespace pmx
 	};
 
 	/// 表示枠
-	struct PmxFrame
+	class PmxFrame
 	{
+	public:
+		PmxFrame()
+			: frame_flag(0)
+			, element_count(0)
+		{
+		}
 		/// 枠名
 		std::wstring frame_name;
 		/// 枠英名
@@ -368,8 +578,27 @@ namespace pmx
 		void Read(std::istream *stream, PmxSetting *setting);
 	};
 
-	struct PmxRigidBody
+	class PmxRigidBody
 	{
+	public:
+		PmxRigidBody()
+			: target_bone(0)
+			, group(0)
+			, mask(0)
+			, shape(0)
+			, mass(0.0f)
+			, move_attenuation(0.0f)
+			, rotation_attenuation(0.0f)
+			, repulsion(0.0f)
+			, friction(0.0f)
+			, physics_calc_type(0)
+		{
+			for (int i = 0; i < 3; ++i) {
+				size[i] = 0.0f;
+				position[i] = 0.0f;
+				orientation[i] = 0.0f;
+			}
+		}
 		/// 剛体名
 		std::wstring girid_body_name;
 		/// 剛体英名
@@ -404,8 +633,24 @@ namespace pmx
 		Hinge = 6
 	};
 
-	struct PmxJointParam
+	class PmxJointParam
 	{
+	public:
+		PmxJointParam()
+			: rigid_body1(0)
+			, rigid_body2(0)
+		{
+			for (int i = 0; i < 3; ++i) {
+				position[i] = 0.0f;
+				orientaiton[i] = 0.0f;
+				move_limitation_min[i] = 0.0f;
+				move_limitation_max[i] = 0.0f;
+				rotation_limitation_min[i] = 0.0f;
+				rotation_limitation_max[i] = 0.0f;
+				spring_move_coefficient[i] = 0.0f;
+				spring_rotation_coefficient[i] = 0.0f;
+			}
+		}
 		int rigid_body1;
 		int rigid_body2;
 		float position[3];
@@ -419,8 +664,9 @@ namespace pmx
 		void Read(std::istream *stream, PmxSetting *setting);
 	};
 
-	struct PmxJoint
+	class PmxJoint
 	{
+	public:
 		std::wstring joint_name;
 		std::wstring joint_english_name;
 		PmxJointType joint_type;
@@ -435,16 +681,61 @@ namespace pmx
 		Link = 0x04
 	};
 
-	struct PmxAncherRigidBody
+	class PmxAncherRigidBody
 	{
+	public:
+		PmxAncherRigidBody()
+			: related_rigid_body(0)
+			, related_vertex(0)
+			, is_near(false)
+		{}
 		int related_rigid_body;
 		int related_vertex;
 		bool is_near;
 		void Read(std::istream *stream, PmxSetting *setting);
 	};
 
-	struct PmxSoftBody
+	class PmxSoftBody
 	{
+	public:
+		PmxSoftBody()
+			: shape(0)
+			, target_material(0)
+			, group(0)
+			, mask(0)
+			, blink_distance(0)
+			, cluster_count(0)
+			, mass(0.0)
+			, collisioni_margin(0.0)
+			, aero_model(0)
+			, VCF(0.0f)
+			, DP(0.0f)
+			, DG(0.0f)
+			, LF(0.0f)
+			, PR(0.0f)
+			, VC(0.0f)
+			, DF(0.0f)
+			, MT(0.0f)
+			, CHR(0.0f)
+			, KHR(0.0f)
+			, SHR(0.0f)
+			, AHR(0.0f)
+			, SRHR_CL(0.0f)
+			, SKHR_CL(0.0f)
+			, SSHR_CL(0.0f)
+			, SR_SPLT_CL(0.0f)
+			, SK_SPLT_CL(0.0f)
+			, SS_SPLT_CL(0.0f)
+			, V_IT(0)
+			, P_IT(0)
+			, D_IT(0)
+			, C_IT(0)
+			, LST(0.0f)
+			, AST(0.0f)
+			, VST(0.0f)
+			, anchor_count(0)
+			, pin_vertex_count(0)
+		{}
 		std::wstring soft_body_name;
 		std::wstring soft_body_english_name;
 		uint8_t shape;
@@ -490,8 +781,23 @@ namespace pmx
 	};
 
 	/// PMXモデル
-	struct PmxModel
+	class PmxModel
 	{
+	public:
+		PmxModel()
+			: version(0.0f)
+			, vertex_count(0)
+			, index_count(0)
+			, texture_count(0)
+			, material_count(0)
+			, bone_count(0)
+			, morph_count(0)
+			, frame_count(0)
+			, rigid_body_count(0)
+			, joint_count(0)
+			, soft_body_count(0)
+		{}
+
 		/// バージョン
 		float version;
 		/// 設定
