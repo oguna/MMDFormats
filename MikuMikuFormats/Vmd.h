@@ -8,6 +8,7 @@
 #include <memory>
 #include <iostream>
 #include <fstream>
+#include <ostream>
 
 namespace vmd
 {
@@ -36,6 +37,15 @@ namespace vmd
 			stream->read((char*) orientation, sizeof(float)*4);
 			stream->read((char*) interpolation, sizeof(char) * 4 * 4 * 4);
 		}
+
+		void Write(std::ostream* stream)
+		{
+			stream->write((char*)name.c_str(), sizeof(char) * 15);
+			stream->write((char*)&frame, sizeof(int));
+			stream->write((char*)position, sizeof(float) * 3);
+			stream->write((char*)orientation, sizeof(float) * 4);
+			stream->write((char*)interpolation, sizeof(char) * 4 * 4 * 4);
+		}
 	};
 
 	/// 表情フレーム
@@ -56,6 +66,13 @@ namespace vmd
 			face_name = std::string(buffer);
 			stream->read((char*) &frame, sizeof(int));
 			stream->read((char*) &weight, sizeof(float));
+		}
+
+		void Write(std::ostream* stream)
+		{
+			stream->write((char*)face_name.c_str(), sizeof(char) * 15);
+			stream->write((char*)&frame, sizeof(int));
+			stream->write((char*)&weight, sizeof(float));
 		}
 	};
 
@@ -88,6 +105,17 @@ namespace vmd
 			stream->read((char*) &angle, sizeof(float));
 			stream->read((char*) unknown, sizeof(char) * 3);
 		}
+
+		void Write(std::ostream *stream)
+		{
+			stream->write((char*)&frame, sizeof(int));
+			stream->write((char*)&distance, sizeof(float));
+			stream->write((char*)position, sizeof(float) * 3);
+			stream->write((char*)orientation, sizeof(float) * 3);
+			stream->write((char*)interpolation, sizeof(char) * 24);
+			stream->write((char*)&angle, sizeof(float));
+			stream->write((char*)unknown, sizeof(char) * 3);
+		}
 	};
 
 	/// ライトフレーム
@@ -106,6 +134,13 @@ namespace vmd
 			stream->read((char*) &frame, sizeof(int));
 			stream->read((char*) color, sizeof(float) * 3);
 			stream->read((char*) position, sizeof(float) * 3);
+		}
+
+		void Write(std::ostream* stream)
+		{
+			stream->write((char*)&frame, sizeof(int));
+			stream->write((char*)color, sizeof(float) * 3);
+			stream->write((char*)position, sizeof(float) * 3);
 		}
 	};
 
@@ -138,6 +173,20 @@ namespace vmd
 				stream->read(buffer, 20);
 				ik_enable[i].ik_name = std::string(buffer);
 				stream->read((char*) &ik_enable[i].enable, sizeof(uint8_t));
+			}
+		}
+
+		void Write(std::ostream *stream)
+		{
+			stream->write((char*)&frame, sizeof(int));
+			stream->write((char*)&display, sizeof(uint8_t));
+			int ik_count = static_cast<int>(ik_enable.size());
+			stream->write((char*)&ik_count, sizeof(int));
+			for (int i = 0; i < ik_count; i++)
+			{
+				const VmdIkEnable& ik_enable = this->ik_enable.at(i);
+				stream->write(ik_enable.ik_name.c_str(), 20);
+				stream->write((char*)&ik_enable.enable, sizeof(uint8_t));
 			}
 		}
 	};
@@ -192,7 +241,7 @@ namespace vmd
 			int bone_frame_num;
 			stream->read((char*) &bone_frame_num, sizeof(int));
 			result->bone_frames.resize(bone_frame_num);
-			for (uint16_t i = 0; i < bone_frame_num; i++)
+			for (int i = 0; i < bone_frame_num; i++)
 			{
 				result->bone_frames[i].Read(stream);
 			}
@@ -228,7 +277,7 @@ namespace vmd
 			stream->read(buffer, 4);
 
 			// ik frames
-			if (!stream->eof())
+			if (stream->peek() != std::ios::traits_type::eof())
 			{
 				int ik_num;
 				stream->read((char*) &ik_num, sizeof(int));
@@ -239,12 +288,78 @@ namespace vmd
 				}
 			}
 
-			if (!stream->eof())
+			if (stream->peek() != std::ios::traits_type::eof())
 			{
 				std::cerr << "vmd stream has unknown data." << std::endl;
 			}
 
 			return result;
+		}
+
+		bool SaveToFile(const std::u16string& filename)
+		{
+			std::ofstream stream(filename.c_str(), std::ios::binary);
+			auto result = SaveToStream(&stream);
+			stream.close();
+			return result;
+		}
+
+		bool SaveToStream(std::ofstream *stream)
+		{
+			std::string magic = "Vocaloid Motion Data 0002\0";
+			magic.resize(30);
+
+			// magic and version
+			stream->write(magic.c_str(), 30);
+
+			// name
+			stream->write(model_name.c_str(), 20);
+
+			// bone frames
+			const int bone_frame_num = static_cast<int>(bone_frames.size());
+			stream->write(reinterpret_cast<const char*>(&bone_frame_num), sizeof(int));
+			for (int i = 0; i < bone_frame_num; i++)
+			{
+				bone_frames[i].Write(stream);
+			}
+
+			// face frames
+			const int face_frame_num = static_cast<int>(face_frames.size());
+			stream->write(reinterpret_cast<const char*>(&face_frame_num), sizeof(int));
+			for (int i = 0; i < face_frame_num; i++)
+			{
+				face_frames[i].Write(stream);
+			}
+
+			// camera frames
+			const int camera_frame_num = static_cast<int>(camera_frames.size());
+			stream->write(reinterpret_cast<const char*>(&camera_frame_num), sizeof(int));
+			for (int i = 0; i < camera_frame_num; i++)
+			{
+				camera_frames[i].Write(stream);
+			}
+
+			// light frames
+			const int light_frame_num = static_cast<int>(light_frames.size());
+			stream->write(reinterpret_cast<const char*>(&light_frame_num), sizeof(int));
+			for (int i = 0; i < light_frame_num; i++)
+			{
+				light_frames[i].Write(stream);
+			}
+
+			// self shadow datas
+			const int self_shadow_num = 0;
+			stream->write(reinterpret_cast<const char*>(&self_shadow_num), sizeof(int));
+
+			// ik frames
+			const int ik_num = static_cast<int>(ik_frames.size());
+			stream->write(reinterpret_cast<const char*>(&ik_num), sizeof(int));
+			for (int i = 0; i < ik_num; i++)
+			{
+				ik_frames[i].Write(stream);
+			}
+
+			return true;
 		}
 	};
 }

@@ -131,9 +131,11 @@ namespace pmd
 	enum class BoneType : uint8_t
 	{
 		Rotation,
-		Rotation_Linear,
+		RotationAndMove,
 		IkEffector,
+		Unknown,
 		IkEffectable,
+		RotationEffectable,
 		IkTarget,
 		Invisible,
 		Twist,
@@ -381,9 +383,9 @@ namespace pmd
 		/// 名前
 		std::string name;
 		/// 剛体Aのインデックス
-		uint16_t rigid_body_index_a;
+		uint32_t rigid_body_index_a;
 		/// 剛体Bのインデックス
-		uint16_t rigid_body_index_b;
+		uint32_t rigid_body_index_b;
 		/// 位置
 		float position[3];
 		/// 回転
@@ -406,8 +408,8 @@ namespace pmd
 			char buffer[20];
 			stream->read(buffer, 20);
 			name = std::string(buffer);
-			stream->read((char *) &rigid_body_index_a, sizeof(uint16_t));
-			stream->read((char *) &rigid_body_index_b, sizeof(uint16_t));
+			stream->read((char *) &rigid_body_index_a, sizeof(uint32_t));
+			stream->read((char *) &rigid_body_index_b, sizeof(uint32_t));
 			stream->read((char *) position, sizeof(float) * 3);
 			stream->read((char *) orientation, sizeof(float) * 3);
 			stream->read((char *) linear_lower_limit, sizeof(float) * 3);
@@ -426,7 +428,7 @@ namespace pmd
 		float version;
 		PmdHeader header;
 		std::vector<PmdVertex> vertices;
-		std::vector<uint8_t> indices;
+		std::vector<uint16_t> indices;
 		std::vector<PmdMaterial> materials;
 		std::vector<PmdBone> bones;
 		std::vector<PmdIk> iks;
@@ -481,7 +483,7 @@ namespace pmd
 			uint32_t vertex_num;
 			stream->read((char*) &vertex_num, sizeof(uint32_t));
 			result->vertices.resize(vertex_num);
-			for (uint8_t i = 0; i < vertex_num; i++)
+			for (uint32_t i = 0; i < vertex_num; i++)
 			{
 				result->vertices[i].Read(stream);
 			}
@@ -490,7 +492,7 @@ namespace pmd
 			uint32_t index_num;
 			stream->read((char*) &index_num, sizeof(uint32_t));
 			result->indices.resize(index_num);
-			for (uint8_t i = 0; i < index_num; i++)
+			for (uint32_t i = 0; i < index_num; i++)
 			{
 				stream->read((char*) &result->indices[i], sizeof(uint16_t));
 			}
@@ -499,7 +501,7 @@ namespace pmd
 			uint32_t material_num;
 			stream->read((char*) &material_num, sizeof(uint32_t));
 			result->materials.resize(material_num);
-			for (uint8_t i = 0; i < material_num; i++)
+			for (uint32_t i = 0; i < material_num; i++)
 			{
 				result->materials[i].Read(stream);
 			}
@@ -508,7 +510,7 @@ namespace pmd
 			uint16_t bone_num;
 			stream->read((char*) &bone_num, sizeof(uint16_t));
 			result->bones.resize(bone_num);
-			for (uint8_t i = 0; i < bone_num; i++)
+			for (uint32_t i = 0; i < bone_num; i++)
 			{
 				result->bones[i].Read(stream);
 			}
@@ -517,7 +519,7 @@ namespace pmd
 			uint16_t ik_num;
 			stream->read((char*) &ik_num, sizeof(uint16_t));
 			result->iks.resize(ik_num);
-			for (uint8_t i = 0; i < ik_num; i++)
+			for (uint32_t i = 0; i < ik_num; i++)
 			{
 				result->iks[i].Read(stream);
 			}
@@ -526,7 +528,7 @@ namespace pmd
 			uint16_t face_num;
 			stream->read((char*) &face_num, sizeof(uint16_t));
 			result->faces.resize(face_num);
-			for (uint8_t i = 0; i < face_num; i++)
+			for (uint32_t i = 0; i < face_num; i++)
 			{
 				result->faces[i].Read(stream);
 			}
@@ -535,7 +537,7 @@ namespace pmd
 			uint8_t face_frame_num;
 			stream->read((char*) &face_frame_num, sizeof(uint8_t));
 			result->faces_indices.resize(face_frame_num);
-			for (uint8_t i = 0; i < face_frame_num; i++)
+			for (uint32_t i = 0; i < face_frame_num; i++)
 			{
 				stream->read((char*) &result->faces_indices[i], sizeof(uint16_t));
 			}
@@ -544,7 +546,7 @@ namespace pmd
 			uint8_t bone_disp_num;
 			stream->read((char*) &bone_disp_num, sizeof(uint8_t));
 			result->bone_disp_name.resize(bone_disp_num);
-			for (uint8_t i = 0; i < bone_disp_num; i++)
+			for (uint32_t i = 0; i < bone_disp_num; i++)
 			{
 				result->bone_disp_name[i].Read(stream);
 			}
@@ -553,7 +555,7 @@ namespace pmd
 			uint32_t bone_frame_num;
 			stream->read((char*) &bone_frame_num, sizeof(uint32_t));
 			result->bone_disp.resize(bone_frame_num);
-			for (uint8_t i = 0; i < bone_frame_num; i++)
+			for (uint32_t i = 0; i < bone_frame_num; i++)
 			{
 				result->bone_disp[i].Read(stream);
 			}
@@ -564,11 +566,11 @@ namespace pmd
 			if (english)
 			{
 				result->header.ReadExtension(stream);
-				for (uint8_t i = 0; i < bone_num; i++)
+				for (uint32_t i = 0; i < bone_num; i++)
 				{
 					result->bones[i].ReadExpantion(stream);
 				}
-				for (uint8_t i = 0; i < face_num; i++)
+				for (uint32_t i = 0; i < face_num; i++)
 				{
 					if (result->faces[i].type == pmd::FaceCategory::Base)
 					{
@@ -576,20 +578,20 @@ namespace pmd
 					}
 					result->faces[i].ReadExpantion(stream);
 				}
-				for (uint8_t i = 0; i < result->bone_disp_name.size(); i++)
+				for (uint32_t i = 0; i < result->bone_disp_name.size(); i++)
 				{
 					result->bone_disp_name[i].ReadExpantion(stream);
 				}
 			}
 
 			// toon textures
-			if (stream->eof())
+			if (stream->peek() == std::ios::traits_type::eof())
 			{
 				result->toon_filenames.clear();
 			}
 			else {
 				result->toon_filenames.resize(10);
-				for (uint8_t i = 0; i < 10; i++)
+				for (uint32_t i = 0; i < 10; i++)
 				{
 					stream->read(buffer, 100);
 					result->toon_filenames[i] = std::string(buffer);
@@ -597,7 +599,7 @@ namespace pmd
 			}
 
 			// physics
-			if (stream->eof())
+			if (stream->peek() == std::ios::traits_type::eof())
 			{
 				result->rigid_bodies.clear();
 				result->constraints.clear();
@@ -606,20 +608,20 @@ namespace pmd
 				uint32_t rigid_body_num;
 				stream->read((char*) &rigid_body_num, sizeof(uint32_t));
 				result->rigid_bodies.resize(rigid_body_num);
-				for (uint8_t i = 0; i < rigid_body_num; i++)
+				for (uint32_t i = 0; i < rigid_body_num; i++)
 				{
 					result->rigid_bodies[i].Read(stream);
 				}
 				uint32_t constraint_num;
 				stream->read((char*) &constraint_num, sizeof(uint32_t));
 				result->constraints.resize(constraint_num);
-				for (uint8_t i = 0; i < constraint_num; i++)
+				for (uint32_t i = 0; i < constraint_num; i++)
 				{
 					result->constraints[i].Read(stream);
 				}
 			}
 
-			if (!stream->eof())
+			if (stream->peek() != std::ios::traits_type::eof())
 			{
 				std::cerr << "there is unknown data" << std::endl;
 			}
