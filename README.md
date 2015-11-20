@@ -1,26 +1,29 @@
 # MikuMikuFormats
 
-## 概要
+[日本語README](README_Ja.md)
 
-このライブラリはMikuMikuDanceで使われている以下のフォーマットの読み込みを行います。
+## General
+
+This library can parse the following formats, which are used in MikuMikuDance.
 
 - PMD
-- PMX(Ver2.0; 2.1には少し対応)
+- PMX(ver2.0; little support for ver2.1)
 - VMD
 
-## 必要
+## Requirement
 
-以下を使っているため、C++11に対応したコンパイラが必要です。
+This library requires C++11 supported compiler, bacause this library uses the following features,
 
 - scoped enumeration
 - uint32_t,uint16_t,uint8_t
 - unique_ptr
 
-## 文字コードの扱いについて
-EncodingHelper.h内でWin32APIを使って変換しています。
-そのためWindows依存です。
+## About Character Encoding
+This library uses Win32API in 'EncodingHelper.h' ,
+so this library need in Windows.
 
-## サンプル
+## Sample
+
 ```cpp
 const char *filename = "sample.pmx";
 pmx::PmxModel model;
@@ -29,10 +32,10 @@ model.Read(&stream);
 stream.close();
 ```
 
-## ライセンス
+## License
 
-ご自由にお使い下さい。
-このプログラム使用によるいかなる損害も、ogunaは責任を負わないものとします。
+You can use this library freely.
+I dont't care about your usages.
 
 Distributed under CC0 1.0 Universal.
 
