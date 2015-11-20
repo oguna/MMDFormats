@@ -1,26 +1,26 @@
-# MikuMikuFormats
+﻿# MikuMikuFormats
 
-## �T�v
+## 概要
 
-���̃��C�u������MikuMikuDance�Ŏg���Ă���ȉ��̃t�H�[�}�b�g�̓ǂݍ��݂��s���܂��B
+このライブラリはMikuMikuDanceで使われている以下のフォーマットの読み込みを行います。
 
 - PMD
-- PMX(Ver2.0; 2.1�ɂ͏����Ή�)
+- PMX(Ver2.0; 2.1には少し対応)
 - VMD
 
-## �K�v
+## 必要
 
-�ȉ����g���Ă��邽�߁AC++11�ɑΉ������R���p�C�����K�v�ł��B
+以下を使っているため、C++11に対応したコンパイラが必要です。
 
 - scoped enumeration
 - uint32_t,uint16_t,uint8_t
 - unique_ptr
 
-## �����R�[�h�̈����ɂ���
-EncodingHelper.h����Win32API���g���ĕϊ����Ă��܂��B
-���̂���Windows�ˑ��ł��B
+## 文字コードの扱いについて
+EncodingHelper.h内でWin32APIを使って変換しています。
+そのためWindows依存です。
 
-## �T���v��
+## サンプル
 ```cpp
 const char *filename = "sample.pmx";
 pmx::PmxModel model;
@@ -29,10 +29,10 @@ model.Read(&stream);
 stream.close();
 ```
 
-## ���C�Z���X
+## ライセンス
 
-�����R�ɂ��g���������B
-���̃v���O�����g�p�ɂ�邢���Ȃ鑹�Q���Aoguna�͐ӔC�𕉂�Ȃ����̂Ƃ��܂��B
+ご自由にお使い下さい。
+このプログラム使用によるいかなる損害も、ogunaは責任を負わないものとします。
 
 Distributed under CC0 1.0 Universal.
 

@@ -1,6 +1,6 @@
-# MikuMikuFormats
+ï»¿# MikuMikuFormats
 
-[“ú–{ŒêREADME](README_Ja.md)
+[æ—¥æœ¬èªžREADME](README_Ja.md)
 
 ## General
 
