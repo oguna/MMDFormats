@@ -1,9 +1,14 @@
+#include <utility>
 #include "Pmx.h"
+#ifndef __unix__
 #include "EncodingHelper.h"
+#else
+#include <unicode/ucnv.h>
+#endif
 
 namespace pmx
 {
-	/// ƒCƒ“ƒfƒbƒNƒX’l‚ð“Ç‚Ýž‚Þ
+	/// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹å€¤ã‚’èª­ã¿è¾¼ã‚€
 	int ReadIndex(std::istream *stream, int size)
 	{
 		switch (size)
@@ -37,30 +42,59 @@ namespace pmx
 		}
 	}
 
-	/// •¶Žš—ñ‚ð“Ç‚Ýž‚Þ
-	std::wstring ReadString(std::istream *stream, uint8_t encoding)
+	/// æ–‡å­—åˆ—ã‚’èª­ã¿è¾¼ã‚€
+	utfstring ReadString(std::istream *stream, uint8_t encoding)
 	{
+#ifndef __unix__
 		oguna::EncodingConverter converter = oguna::EncodingConverter();
+#endif
 		int size;
 		stream->read((char*) &size, sizeof(int));
 		std::vector<char> buffer;
 		if (size == 0)
 		{
-			return std::wstring(L"");
+#ifndef __unix__
+			return utfstring(L"");
+#else
+			return utfstring("");
+#endif
 		}
-		buffer.resize(size);
+		buffer.reserve(size);
 		stream->read((char*) buffer.data(), size);
 		if (encoding == 0)
 		{
 			// UTF16
-			return std::wstring((wchar_t*) buffer.data(), size / 2);
+#ifndef __unix__
+			return utfstring((wchar_t*) buffer.data(), size / 2);
+#else
+			utfstring result;
+			std::vector<char> outbuf;
+			outbuf.reserve(size*2);
+
+			// Always remember to set U_ZERO_ERROR before calling ucnv_convert(),
+			// otherwise the function will fail.
+			UErrorCode err = U_ZERO_ERROR;
+			size = ucnv_convert("UTF-8", "UTF-16LE", (char*)outbuf.data(), outbuf.capacity(), buffer.data(), size, &err);
+			if(!U_SUCCESS(err)) {
+				std::cout << "oops, something wrong?" << std::endl;
+				std::cout << u_errorName(err) << std::endl;
+				exit(-1);
+			}
+			
+			result.assign((const char*)outbuf.data(), size);
+			return result;
+#endif
 		}
 		else
 		{
 			// UTF8
-			std::wstring result;
+#ifndef __unix__
+			utfstring result;
 			converter.Utf8ToUtf16(buffer.data(), size, &result);
 			return result;
+#else
+			return utfstring((const char*)buffer.data(), size);
+#endif
 		}
 	}
 
@@ -169,8 +203,8 @@ namespace pmx
 
 	void PmxMaterial::Read(std::istream *stream, PmxSetting *setting)
 	{
-		this->material_name.swap(ReadString(stream, setting->encoding));
-		this->material_english_name.swap(ReadString(stream, setting->encoding));
+		this->material_name = std::move(ReadString(stream, setting->encoding));
+		this->material_english_name = std::move(ReadString(stream, setting->encoding));
 		stream->read((char*) this->diffuse, sizeof(float) * 4);
 		stream->read((char*) this->specular, sizeof(float) * 3);
 		stream->read((char*) &this->specularlity, sizeof(float));
@@ -189,7 +223,7 @@ namespace pmx
 		else {
 			this->toon_texture_index = ReadIndex(stream, setting->texture_index_size);
 		}
-		this->memo.swap(ReadString(stream, setting->encoding));
+		this->memo = std::move(ReadString(stream, setting->encoding));
 		stream->read((char*) &this->index_count, sizeof(int));
 	}
 
@@ -206,8 +240,8 @@ namespace pmx
 
 	void PmxBone::Read(std::istream *stream, PmxSetting *setting)
 	{
-		this->bone_name.swap(ReadString(stream, setting->encoding));
-		this->bone_english_name.swap(ReadString(stream, setting->encoding));
+		this->bone_name = std::move(ReadString(stream, setting->encoding));
+		this->bone_english_name = std::move(ReadString(stream, setting->encoding));
 		stream->read((char*) this->position, sizeof(float) * 3);
 		this->parent_index = ReadIndex(stream, setting->bone_index_size);
 		stream->read((char*) &this->level, sizeof(int));
@@ -230,7 +264,7 @@ namespace pmx
 			stream->read((char*)this->local_axis_y_orientation, sizeof(float) * 3);
 		}
 		if (this->bone_flag & 0x2000) {
-			stream->read((char*)this->key, sizeof(int));
+			stream->read((char*) &this->key, sizeof(int));
 		}
 		if (this->bone_flag & 0x0020) {
 			this->ik_target_bone_index = ReadIndex(stream, setting->bone_index_size);
@@ -426,7 +460,7 @@ namespace pmx
 
 	void PmxSoftBody::Read(std::istream *stream, PmxSetting *setting)
 	{
-		// –¢ŽÀ‘•
+		// æœªå®Ÿè£…
 		std::cerr << "Not Implemented Exception" << std::endl;
 		throw;
 	}
@@ -462,7 +496,7 @@ namespace pmx
 
 	void PmxModel::Read(std::istream *stream)
 	{
-		// ƒ}ƒWƒbƒN
+		// ãƒžã‚¸ãƒƒã‚¯
 		char magic[4];
 		stream->read((char*) magic, sizeof(char) * 4);
 		if (magic[0] != 0x50 || magic[1] != 0x4d || magic[2] != 0x58 || magic[3] != 0x20)
@@ -470,23 +504,23 @@ namespace pmx
 			std::cerr << "invalid magic number." << std::endl;
 			throw;
 		}
-		// ƒo[ƒWƒ‡ƒ“
+		// ãƒãƒ¼ã‚¸ãƒ§ãƒ³
 		stream->read((char*) &version, sizeof(float));
 		if (version != 2.0f && version != 2.1f)
 		{
 			std::cerr << "this is not ver2.0 or ver2.1 but " << version << "." << std::endl;
 			throw;
 		}
-		// ƒtƒ@ƒCƒ‹Ý’è
+		// ãƒ•ã‚¡ã‚¤ãƒ«è¨­å®š
 		this->setting.Read(stream);
 
-		// ƒ‚ƒfƒ‹î•ñ
-		this->model_name.swap(ReadString(stream, setting.encoding));
-		this->model_english_name.swap(ReadString(stream, setting.encoding));
-		this->model_comment.swap(ReadString(stream, setting.encoding));
-		this->model_english_commnet.swap(ReadString(stream, setting.encoding));
+		// ãƒ¢ãƒ‡ãƒ«æƒ…å ±
+		this->model_name = std::move(ReadString(stream, setting.encoding));
+		this->model_english_name = std::move(ReadString(stream, setting.encoding));
+		this->model_comment = std::move(ReadString(stream, setting.encoding));
+		this->model_english_commnet = std::move(ReadString(stream, setting.encoding));
 
-		// ’¸“_
+		// é ‚ç‚¹
 		stream->read((char*) &vertex_count, sizeof(int));
 		this->vertices = std::make_unique<PmxVertex []>(vertex_count);
 		for (int i = 0; i < vertex_count; i++)
@@ -494,7 +528,7 @@ namespace pmx
 			vertices[i].Read(stream, &setting);
 		}
 
-		// –Ê
+		// é¢
 		stream->read((char*) &index_count, sizeof(int));
 		this->indices = std::make_unique<int []>(index_count);
 		for (int i = 0; i < index_count; i++)
@@ -502,15 +536,15 @@ namespace pmx
 			this->indices[i] = ReadIndex(stream, setting.vertex_index_size);
 		}
 
-		// ƒeƒNƒXƒ`ƒƒ
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£
 		stream->read((char*) &texture_count, sizeof(int));
-		this->textures = std::make_unique<std::wstring []>(texture_count);
+		this->textures = std::make_unique<utfstring []>(texture_count);
 		for (int i = 0; i < texture_count; i++)
 		{
 			this->textures[i] = ReadString(stream, setting.encoding);
 		}
 
-		// ƒ}ƒeƒŠƒAƒ‹
+		// ãƒžãƒ†ãƒªã‚¢ãƒ«
 		stream->read((char*) &material_count, sizeof(int));
 		this->materials = std::make_unique<PmxMaterial []>(material_count);
 		for (int i = 0; i < material_count; i++)
@@ -518,7 +552,7 @@ namespace pmx
 			this->materials[i].Read(stream, &setting);
 		}
 
-		// ƒ{[ƒ“
+		// ãƒœãƒ¼ãƒ³
 		stream->read((char*) &this->bone_count, sizeof(int));
 		this->bones = std::make_unique<PmxBone []>(this->bone_count);
 		for (int i = 0; i < this->bone_count; i++)
@@ -526,7 +560,7 @@ namespace pmx
 			this->bones[i].Read(stream, &setting);
 		}
 
-		// ƒ‚[ƒt
+		// ãƒ¢ãƒ¼ãƒ•
 		stream->read((char*) &this->morph_count, sizeof(int));
 		this->morphs = std::make_unique<PmxMorph []>(this->morph_count);
 		for (int i = 0; i < this->morph_count; i++)
@@ -534,7 +568,7 @@ namespace pmx
 			this->morphs[i].Read(stream, &setting);
 		}
 
-		// •\Ž¦˜g
+		// è¡¨ç¤ºæž 
 		stream->read((char*) &this->frame_count, sizeof(int));
 		this->frames = std::make_unique<PmxFrame []>(this->frame_count);
 		for (int i = 0; i < this->frame_count; i++)
@@ -542,7 +576,7 @@ namespace pmx
 			this->frames[i].Read(stream, &setting);
 		}
 
-		// „‘Ì
+		// å‰›ä½“
 		stream->read((char*) &this->rigid_body_count, sizeof(int));
 		this->rigid_bodies = std::make_unique<PmxRigidBody []>(this->rigid_body_count);
 		for (int i = 0; i < this->rigid_body_count; i++)
@@ -550,7 +584,7 @@ namespace pmx
 			this->rigid_bodies[i].Read(stream, &setting);
 		}
 
-		// ƒWƒ‡ƒCƒ“ƒg
+		// ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆ
 		stream->read((char*) &this->joint_count, sizeof(int));
 		this->joints = std::make_unique<PmxJoint []>(this->joint_count);
 		for (int i = 0; i < this->joint_count; i++)
@@ -558,7 +592,7 @@ namespace pmx
 			this->joints[i].Read(stream, &setting);
 		}
 
-		//// ƒ\ƒtƒgƒ{ƒfƒB
+		//// ã‚½ãƒ•ãƒˆãƒœãƒ‡ã‚£
 		//if (this->version == 2.1f)
 		//{
 		//	stream->read((char*) &this->soft_body_count, sizeof(int));

@@ -9,19 +9,19 @@
 
 namespace vmd
 {
-	/// ƒ{[ƒ“ƒtƒŒ[ƒ€
+	/// ãƒœãƒ¼ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ 
 	class VmdBoneFrame
 	{
 	public:
-		/// ƒ{[ƒ“–¼
+		/// ãƒœãƒ¼ãƒ³å
 		std::string name;
-		/// ƒtƒŒ[ƒ€”Ô†
+		/// ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·
 		int frame;
-		/// ˆÊ’u
+		/// ä½ç½®
 		float position[3];
-		/// ‰ñ“]
+		/// å›è»¢
 		float orientation[4];
-		/// •âŠÔ‹Èü
+		/// è£œé–“æ›²ç·š
 		char interpolation[4][4][4];
 
 		void Read(std::istream* stream)
@@ -45,15 +45,15 @@ namespace vmd
 		}
 	};
 
-	/// •\îƒtƒŒ[ƒ€
+	/// è¡¨æƒ…ãƒ•ãƒ¬ãƒ¼ãƒ 
 	class VmdFaceFrame
 	{
 	public:
-		/// •\î–¼
+		/// è¡¨æƒ…å
 		std::string face_name;
-		/// •\î‚Ìd‚İ
+		/// è¡¨æƒ…ã®é‡ã¿
 		float weight;
-		/// ƒtƒŒ[ƒ€”Ô†
+		/// ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·
 		uint32_t frame;
 
 		void Read(std::istream* stream)
@@ -73,23 +73,23 @@ namespace vmd
 		}
 	};
 
-	/// ƒJƒƒ‰ƒtƒŒ[ƒ€
+	/// ã‚«ãƒ¡ãƒ©ãƒ•ãƒ¬ãƒ¼ãƒ 
 	class VmdCameraFrame
 	{
 	public:
-		/// ƒtƒŒ[ƒ€”Ô†
+		/// ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·
 		int frame;
-		/// ‹——£
+		/// è·é›¢
 		float distance;
-		/// ˆÊ’u
+		/// ä½ç½®
 		float position[3];
-		/// ‰ñ“]
+		/// å›è»¢
 		float orientation[3];
-		/// •âŠÔ‹Èü
+		/// è£œé–“æ›²ç·š
 		char interpolation[6][4];
-		/// ‹–ìŠp
+		/// è¦–é‡è§’
 		float angle;
-		/// •s–¾ƒf[ƒ^
+		/// ä¸æ˜ãƒ‡ãƒ¼ã‚¿
 		char unknown[3];
 
 		void Read(std::istream *stream)
@@ -115,15 +115,15 @@ namespace vmd
 		}
 	};
 
-	/// ƒ‰ƒCƒgƒtƒŒ[ƒ€
+	/// ãƒ©ã‚¤ãƒˆãƒ•ãƒ¬ãƒ¼ãƒ 
 	class VmdLightFrame
 	{
 	public:
-		/// ƒtƒŒ[ƒ€”Ô†
+		/// ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·
 		int frame;
-		/// F
+		/// è‰²
 		float color[3];
-		/// ˆÊ’u
+		/// ä½ç½®
 		float position[3];
 
 		void Read(std::istream* stream)
@@ -141,7 +141,7 @@ namespace vmd
 		}
 	};
 
-	/// IK‚Ì—LŒø–³Œø
+	/// IKã®æœ‰åŠ¹ç„¡åŠ¹
 	class VmdIkEnable
 	{
 	public:
@@ -149,7 +149,7 @@ namespace vmd
 		bool enable;
 	};
 
-	/// IKƒtƒŒ[ƒ€
+	/// IKãƒ•ãƒ¬ãƒ¼ãƒ 
 	class VmdIkFrame
 	{
 	public:
@@ -188,23 +188,23 @@ namespace vmd
 		}
 	};
 
-	/// VMDƒ‚[ƒVƒ‡ƒ“
+	/// VMDãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 	class VmdMotion
 	{
 	public:
-		/// ƒ‚ƒfƒ‹–¼
+		/// ãƒ¢ãƒ‡ãƒ«å
 		std::string model_name;
-		/// ƒo[ƒWƒ‡ƒ“
+		/// ãƒãƒ¼ã‚¸ãƒ§ãƒ³
 		int version;
-		/// ƒ{[ƒ“ƒtƒŒ[ƒ€
+		/// ãƒœãƒ¼ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ 
 		std::vector<VmdBoneFrame> bone_frames;
-		/// •\îƒtƒŒ[ƒ€
+		/// è¡¨æƒ…ãƒ•ãƒ¬ãƒ¼ãƒ 
 		std::vector<VmdFaceFrame> face_frames;
-		/// ƒJƒƒ‰ƒtƒŒ[ƒ€
+		/// ã‚«ãƒ¡ãƒ©ãƒ•ãƒ¬ãƒ¼ãƒ 
 		std::vector<VmdCameraFrame> camera_frames;
-		/// ƒ‰ƒCƒgƒtƒŒ[ƒ€
+		/// ãƒ©ã‚¤ãƒˆãƒ•ãƒ¬ãƒ¼ãƒ 
 		std::vector<VmdLightFrame> light_frames;
-		/// IKƒtƒŒ[ƒ€
+		/// IKãƒ•ãƒ¬ãƒ¼ãƒ 
 		std::vector<VmdIkFrame> ik_frames;
 
 		static std::unique_ptr<VmdMotion> LoadFromFile(char const *filename)
