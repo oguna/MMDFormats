@@ -811,7 +811,7 @@ namespace pmx
 		/// コメント
 		utfstring model_comment;
 		/// 英語コメント
-		utfstring model_english_commnet;
+		utfstring model_english_comment;
 		/// 頂点数
 		int vertex_count;
 		/// 頂点配列

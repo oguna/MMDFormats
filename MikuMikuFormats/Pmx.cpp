@@ -471,7 +471,7 @@ namespace pmx
 		this->model_name.clear();
 		this->model_english_name.clear();
 		this->model_comment.clear();
-		this->model_english_commnet.clear();
+		this->model_english_comment.clear();
 		this->vertex_count = 0;
 		this->vertices = nullptr;
 		this->index_count = 0;
@@ -518,7 +518,7 @@ namespace pmx
 		this->model_name = std::move(ReadString(stream, setting.encoding));
 		this->model_english_name = std::move(ReadString(stream, setting.encoding));
 		this->model_comment = std::move(ReadString(stream, setting.encoding));
-		this->model_english_commnet = std::move(ReadString(stream, setting.encoding));
+		this->model_english_comment = std::move(ReadString(stream, setting.encoding));
 
 		// 頂点
 		stream->read((char*) &vertex_count, sizeof(int));
