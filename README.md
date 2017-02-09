@@ -11,16 +11,27 @@ This library can parse the following formats, which are used in MikuMikuDance.
 - VMD
 
 ## Requirement
+Windows MSVC:
 
-This library requires C++11 supported compiler, bacause this library uses the following features,
+This library requires C++11 supported compiler, because this library uses the following features,
 
 - scoped enumeration
 - uint32_t,uint16_t,uint8_t
 - unique_ptr
 
+Un\*x:
+- C++14 for the feature make_unique
+- cmake
+- ICU(International Components for Unicode)
+
 ## About Character Encoding
-This library uses Win32API in 'EncodingHelper.h' ,
-so this library need in Windows.
+Windows:
+
+This library uses Win32API in 'EncodingHelper.h'.
+
+Un\*x:
+
+We use ICU library to convert from UTF-16LE to UTF-8.
 
 ## Sample
 
@@ -32,6 +43,11 @@ model.Read(&stream);
 stream.close();
 ```
 
+An sample binary `demo` can be built from `test.cpp`.
+```bash
+./demo [PMX file path]
+```
+
 ## License
 
 You can use this library freely.
@@ -39,3 +55,4 @@ I dont't care about your usages.
 
 Distributed under CC0 1.0 Universal.
 
+`FindICU.cmake` is made by [POINSOT Julien](https://github.com/julp/FindICU.cmake) and is under BSD.

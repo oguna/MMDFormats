@@ -8,17 +8,17 @@
 
 namespace pmd
 {
-	/// ƒwƒbƒ_
+	/// ãƒ˜ãƒƒãƒ€
 	class PmdHeader
 	{
 	public:
-		/// ƒ‚ƒfƒ‹–¼
+		/// ãƒ¢ãƒ‡ãƒ«å
 		std::string name;
-		/// ƒ‚ƒfƒ‹–¼(‰pŒê)
+		/// ãƒ¢ãƒ‡ãƒ«å(è‹±èª)
 		std::string name_english;
-		/// ƒRƒƒ“ƒg
+		/// ã‚³ãƒ¡ãƒ³ãƒˆ
 		std::string comment;
-		/// ƒRƒƒ“ƒg(‰pŒê)
+		/// ã‚³ãƒ¡ãƒ³ãƒˆ(è‹±èª)
 		std::string comment_english;
 
 		bool Read(std::ifstream* stream)
@@ -42,26 +42,26 @@ namespace pmd
 		}
 	};
 
-	/// ’¸“_
+	/// é ‚ç‚¹
 	class PmdVertex
 	{
 	public:
-		/// ˆÊ’u
+		/// ä½ç½®
 		float position[3];
 
-		/// –@ü
+		/// æ³•ç·š
 		float normal[3];
 
-		/// UVÀ•W
+		/// UVåº§æ¨™
 		float uv[2];
 
-		/// ŠÖ˜Aƒ{[ƒ“ƒCƒ“ƒfƒbƒNƒX
+		/// é–¢é€£ãƒœãƒ¼ãƒ³ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 		uint16_t bone_index[2];
 
-		/// ƒ{[ƒ“ƒEƒFƒCƒg
+		/// ãƒœãƒ¼ãƒ³ã‚¦ã‚§ã‚¤ãƒˆ
 		uint8_t bone_weight;
 
-		/// ƒGƒbƒW•s‰Â‹
+		/// ã‚¨ãƒƒã‚¸ä¸å¯è¦–
 		bool edge_invisible;
 
 		bool Read(std::ifstream* stream)
@@ -76,27 +76,27 @@ namespace pmd
 		}
 	};
 
-	/// Ş¿
+	/// æè³ª
 	class PmdMaterial
 	{
 	public:
-		/// Œ¸ŠF
+		/// æ¸›è¡°è‰²
 		float diffuse[4];
-		/// Œõ‘ò“x
+		/// å…‰æ²¢åº¦
 		float power;
-		/// Œõ‘òF
+		/// å…‰æ²¢è‰²
 		float specular[3];
-		/// ŠÂ‹«F
+		/// ç’°å¢ƒè‰²
 		float ambient[3];
-		/// ƒg[ƒ“ƒCƒ“ƒfƒbƒNƒX
+		/// ãƒˆãƒ¼ãƒ³ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 		uint8_t toon_index;
-		/// ƒGƒbƒW
+		/// ã‚¨ãƒƒã‚¸
 		uint8_t edge_flag;
-		/// ƒCƒ“ƒfƒbƒNƒX”
+		/// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ•°
 		uint32_t index_count;
-		/// ƒeƒNƒXƒ`ƒƒƒtƒ@ƒCƒ‹–¼
+		/// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚¡ã‚¤ãƒ«å
 		std::string texture_filename;
-		/// ƒXƒtƒBƒAƒtƒ@ƒCƒ‹–¼
+		/// ã‚¹ãƒ•ã‚£ã‚¢ãƒ•ã‚¡ã‚¤ãƒ«å
 		std::string sphere_filename;
 
 		bool Read(std::ifstream* stream)
@@ -139,23 +139,23 @@ namespace pmd
 		RotationMovement
 	};
 
-	/// ƒ{[ƒ“
+	/// ãƒœãƒ¼ãƒ³
 	class PmdBone
 	{
 	public:
-		/// ƒ{[ƒ“–¼
+		/// ãƒœãƒ¼ãƒ³å
 		std::string name;
-		/// ƒ{[ƒ“–¼(‰pŒê)
+		/// ãƒœãƒ¼ãƒ³å(è‹±èª)
 		std::string name_english;
-		/// eƒ{[ƒ“”Ô†
+		/// è¦ªãƒœãƒ¼ãƒ³ç•ªå·
 		uint16_t parent_bone_index;
-		/// ––’[ƒ{[ƒ“”Ô†
+		/// æœ«ç«¯ãƒœãƒ¼ãƒ³ç•ªå·
 		uint16_t tail_pos_bone_index;
-		/// ƒ{[ƒ“í—Ş
+		/// ãƒœãƒ¼ãƒ³ç¨®é¡
 		BoneType bone_type;
-		/// IKƒ{[ƒ“”Ô†
+		/// IKãƒœãƒ¼ãƒ³ç•ªå·
 		uint16_t ik_parent_bone_index;
-		/// ƒ{[ƒ“‚Ìƒwƒbƒh‚ÌˆÊ’u
+		/// ãƒœãƒ¼ãƒ³ã®ãƒ˜ãƒƒãƒ‰ã®ä½ç½®
 		float bone_head_pos[3];
 
 		void Read(std::istream *stream)
@@ -182,15 +182,15 @@ namespace pmd
 	class PmdIk
 	{
 	public:
-		/// IKƒ{[ƒ“”Ô†
+		/// IKãƒœãƒ¼ãƒ³ç•ªå·
 		uint16_t ik_bone_index;
-		/// IKƒ^[ƒQƒbƒgƒ{[ƒ“”Ô†
+		/// IKã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒœãƒ¼ãƒ³ç•ªå·
 		uint16_t target_bone_index;
-		/// Ä‹A‰ñ”
+		/// å†å¸°å›æ•°
 		uint16_t interations;
-		/// Šp“x§ŒÀ
+		/// è§’åº¦åˆ¶é™
 		float angle_limit;
-		/// ‰e‹¿‰ºƒ{[ƒ“”Ô†
+		/// å½±éŸ¿ä¸‹ãƒœãƒ¼ãƒ³ç•ªå·
 		std::vector<uint16_t> ik_child_bone_index;
 
 		void Read(std::istream *stream)
@@ -262,7 +262,7 @@ namespace pmd
 		}
 	};
 
-	/// ƒ{[ƒ“˜g—p‚Ì˜g–¼
+	/// ãƒœãƒ¼ãƒ³æ ç”¨ã®æ å
 	class PmdBoneDispName
 	{
 	public:
@@ -297,59 +297,59 @@ namespace pmd
 		}
 	};
 
-	/// Õ“ËŒ`ó
+	/// è¡çªå½¢çŠ¶
 	enum class RigidBodyShape : uint8_t
 	{
-		/// ‹…
+		/// çƒ
 		Sphere = 0,
-		/// ’¼•û‘Ì
+		/// ç›´æ–¹ä½“
 		Box = 1,
-		/// ƒJƒvƒZƒ‹
+		/// ã‚«ãƒ—ã‚»ãƒ«
 		Cpusel = 2
 	};
 
-	/// „‘Ìƒ^ƒCƒv
+	/// å‰›ä½“ã‚¿ã‚¤ãƒ—
 	enum class RigidBodyType : uint8_t
 	{
-		/// ƒ{[ƒ“’Ç]
+		/// ãƒœãƒ¼ãƒ³è¿½å¾“
 		BoneConnected = 0,
-		/// •¨—‰‰Z
+		/// ç‰©ç†æ¼”ç®—
 		Physics = 1,
-		/// •¨—‰‰Z(BoneˆÊ’u‡‚¹)
+		/// ç‰©ç†æ¼”ç®—(Boneä½ç½®åˆã›)
 		ConnectedPhysics = 2
 	};
 
-	/// „‘Ì
+	/// å‰›ä½“
 	class PmdRigidBody
 	{
 	public:
-		/// –¼‘O
+		/// åå‰
 		std::string name;
-		/// ŠÖ˜Aƒ{[ƒ“”Ô†
+		/// é–¢é€£ãƒœãƒ¼ãƒ³ç•ªå·
 		uint16_t related_bone_index;
-		/// ƒOƒ‹[ƒv”Ô†
+		/// ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·
 		uint8_t group_index;
-		/// ƒ}ƒXƒN
+		/// ãƒã‚¹ã‚¯
 		uint16_t mask;
-		/// Œ`ó
+		/// å½¢çŠ¶
 		RigidBodyShape shape;
-		/// ‘å‚«‚³
+		/// å¤§ãã•
 		float size[3];
-		/// ˆÊ’u
+		/// ä½ç½®
 		float position[3];
-		/// ‰ñ“]
+		/// å›è»¢
 		float orientation[3];
-		/// ¿—Ê
+		/// è³ªé‡
 		float weight;
-		/// ˆÚ“®ƒ_ƒ“ƒsƒ“ƒO
+		/// ç§»å‹•ãƒ€ãƒ³ãƒ”ãƒ³ã‚°
 		float linear_damping;
-		/// ‰ñ“]ƒ_ƒ“ƒsƒ“ƒO
+		/// å›è»¢ãƒ€ãƒ³ãƒ”ãƒ³ã‚°
 		float anglar_damping;
-		/// ”½”­ŒW”
+		/// åç™ºä¿‚æ•°
 		float restitution;
-		/// –€CŒW”
+		/// æ‘©æ“¦ä¿‚æ•°
 		float friction;
-		/// ‰‰Z•û–@
+		/// æ¼”ç®—æ–¹æ³•
 		RigidBodyType rigid_type;
 
 		void Read(std::istream *stream)
@@ -373,31 +373,31 @@ namespace pmd
 		}
 	};
 
-	/// „‘Ì‚ÌS‘©
+	/// å‰›ä½“ã®æ‹˜æŸ
 	class PmdConstraint
 	{
 	public:
-		/// –¼‘O
+		/// åå‰
 		std::string name;
-		/// „‘ÌA‚ÌƒCƒ“ƒfƒbƒNƒX
+		/// å‰›ä½“Aã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 		uint32_t rigid_body_index_a;
-		/// „‘ÌB‚ÌƒCƒ“ƒfƒbƒNƒX
+		/// å‰›ä½“Bã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 		uint32_t rigid_body_index_b;
-		/// ˆÊ’u
+		/// ä½ç½®
 		float position[3];
-		/// ‰ñ“]
+		/// å›è»¢
 		float orientation[3];
-		/// Å¬ˆÚ“®§ŒÀ
+		/// æœ€å°ç§»å‹•åˆ¶é™
 		float linear_lower_limit[3];
-		/// Å‘åˆÚ“®§ŒÀ
+		/// æœ€å¤§ç§»å‹•åˆ¶é™
 		float linear_upper_limit[3];
-		/// Å¬‰ñ“]§ŒÀ
+		/// æœ€å°å›è»¢åˆ¶é™
 		float angular_lower_limit[3];
-		/// Å‘å‰ñ“]§ŒÀ
+		/// æœ€å¤§å›è»¢åˆ¶é™
 		float angular_upper_limit[3];
-		/// ˆÚ“®‚É‘Î‚·‚é•œŒ³—Í
+		/// ç§»å‹•ã«å¯¾ã™ã‚‹å¾©å…ƒåŠ›
 		float linear_stiffness[3];
-		/// ‰ñ“]‚É‘Î‚·‚é•œŒ³—Í
+		/// å›è»¢ã«å¯¾ã™ã‚‹å¾©å…ƒåŠ›
 		float angular_stiffness[3];
 
 		void Read(std::istream *stream)
@@ -418,7 +418,7 @@ namespace pmd
 		}
 	};
 
-	/// PMDƒ‚ƒfƒ‹
+	/// PMDãƒ¢ãƒ‡ãƒ«
 	class PmdModel
 	{
 	public:
@@ -450,7 +450,7 @@ namespace pmd
 			return result;
 		}
 
-		/// ƒtƒ@ƒCƒ‹‚©‚çPmdModel‚ğ¶¬‚·‚é
+		/// ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰PmdModelã‚’ç”Ÿæˆã™ã‚‹
 		static std::unique_ptr<PmdModel> LoadFromStream(std::ifstream *stream)
 		{
 			auto result = std::make_unique<PmdModel>();

@@ -10,20 +10,20 @@
 
 namespace oguna
 {
-	/// CP932,UTF8,UTF16‚ð‘ŠŒÝ•ÏŠ·‚·‚é
+	/// CP932,UTF8,UTF16ã‚’ç›¸äº’å¤‰æ›ã™ã‚‹
 	class EncodingConverter
 	{
 	protected:
 		std::vector<char> buffer;
 
 	public:
-		/// Žw’è‚µ‚½ƒTƒCƒY‚Ìƒoƒbƒtƒ@‚ðŽ‚Á‚½ƒRƒ“ƒo[ƒ^‚ð‰Šú‰»‚·‚é(‰Šú’l:MAX_PATH)
+		/// æŒ‡å®šã—ãŸã‚µã‚¤ã‚ºã®ãƒãƒƒãƒ•ã‚¡ã‚’æŒã£ãŸã‚³ãƒ³ãƒãƒ¼ã‚¿ã‚’åˆæœŸåŒ–ã™ã‚‹(åˆæœŸå€¤:MAX_PATH)
 		EncodingConverter(int initial_buffer_size = MAX_PATH)
 		{
 			buffer.resize(initial_buffer_size);
 		}
 
-		/// UTF8‚©‚çCP932(std::string)‚Ö•ÏŠ·‚·‚é
+		/// UTF8ã‹ã‚‰CP932(std::string)ã¸å¤‰æ›ã™ã‚‹
 		int Utf8ToCp932(const char* src, int size, std::string *out)
 		{
 			std::wstring unicode;
@@ -31,7 +31,7 @@ namespace oguna
 			return Utf16ToCp932(unicode.data(), unicode.length(), out);
 		}
 
-		/// CP932‚©‚çUTF8(std::string)‚Ö•ÏŠ·‚·‚é
+		/// CP932ã‹ã‚‰UTF8(std::string)ã¸å¤‰æ›ã™ã‚‹
 		int Cp932ToUtf8(const char* src, int length, std::string *out)
 		{
 			std::wstring unicode;
@@ -39,7 +39,7 @@ namespace oguna
 			return Utf16ToUtf8(unicode.c_str(), unicode.length(), out);
 		}
 
-		/// CP932‚©‚çUTF16(std::wstring)‚Ö•ÏŠ·‚·‚é
+		/// CP932ã‹ã‚‰UTF16(std::wstring)ã¸å¤‰æ›ã™ã‚‹
 		int Cp932ToUtf16(const char *src, int length, std::wstring *out)
 		{
 			int size;
@@ -50,7 +50,7 @@ namespace oguna
 			return size;
 		}
 
-		/// UTF16‚©‚çCP932(std::string)‚Ö•ÏŠ·‚·‚é
+		/// UTF16ã‹ã‚‰CP932(std::string)ã¸å¤‰æ›ã™ã‚‹
 		int Utf16ToCp932(const wchar_t *src, int length, std::string *out)
 		{
 			int size;
@@ -61,7 +61,7 @@ namespace oguna
 			return size;
 		}
 
-		/// UTF8‚©‚çUTF16(std::wstring)‚Ö•ÏŠ·‚·‚é
+		/// UTF8ã‹ã‚‰UTF16(std::wstring)ã¸å¤‰æ›ã™ã‚‹
 		int Utf8ToUtf16(const char *src, int length, std::wstring *out)
 		{
 			int size;
@@ -72,7 +72,7 @@ namespace oguna
 			return size;
 		}
 
-		/// UTF16‚©‚çUTF8(std::string)‚Ö•ÏŠ·‚·‚é
+		/// UTF16ã‹ã‚‰UTF8(std::string)ã¸å¤‰æ›ã™ã‚‹
 		int Utf16ToUtf8(const wchar_t *src, int length, std::string *out)
 		{
 			int size;
