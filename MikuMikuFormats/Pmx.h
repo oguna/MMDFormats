@@ -602,9 +602,9 @@ namespace pmx
 			}
 		}
 		/// 剛体名
-		utfstring girid_body_name;
+		utfstring rigid_body_name;
 		/// 剛体英名
-		utfstring girid_body_english_name;
+		utfstring rigid_body_english_name;
 		/// 関連ボーンインデックス
 		int target_bone;
 		/// グループ
@@ -683,10 +683,10 @@ namespace pmx
 		Link = 0x04
 	};
 
-	class PmxAncherRigidBody
+	class PmxAnchorRigidBody
 	{
 	public:
-		PmxAncherRigidBody()
+		PmxAnchorRigidBody()
 			: related_rigid_body(0)
 			, related_vertex(0)
 			, is_near(false)
@@ -776,7 +776,7 @@ namespace pmx
 		float AST;
 		float VST;
 		int anchor_count;
-		std::unique_ptr<PmxAncherRigidBody []> anchers;
+		std::unique_ptr<PmxAnchorRigidBody []> anchors;
 		int pin_vertex_count;
 		std::unique_ptr<int []> pin_vertices;
 		void Read(std::istream *stream, PmxSetting *setting);

@@ -412,8 +412,8 @@ namespace pmx
 
 	void PmxRigidBody::Read(std::istream *stream, PmxSetting *setting)
 	{
-		this->girid_body_name = ReadString(stream, setting->encoding);
-		this->girid_body_english_name = ReadString(stream, setting->encoding);
+		this->rigid_body_name = ReadString(stream, setting->encoding);
+		this->rigid_body_english_name = ReadString(stream, setting->encoding);
 		this->target_bone = ReadIndex(stream, setting->bone_index_size);
 		stream->read((char*) &this->group, sizeof(uint8_t));
 		stream->read((char*) &this->mask, sizeof(uint16_t));
@@ -451,7 +451,7 @@ namespace pmx
 		this->param.Read(stream, setting);
 	}
 
-	void PmxAncherRigidBody::Read(std::istream *stream, PmxSetting *setting)
+	void PmxAnchorRigidBody::Read(std::istream *stream, PmxSetting *setting)
 	{
 		this->related_rigid_body = ReadIndex(stream, setting->rigidbody_index_size);
 		this->related_vertex = ReadIndex(stream, setting->vertex_index_size);
