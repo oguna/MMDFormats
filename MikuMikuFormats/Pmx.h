@@ -364,7 +364,7 @@ namespace pmx
 		AdditionalUV4 = 7,
 		Matrial = 8,
 		Flip = 9,
-		Implus = 10,
+		Impulse = 10,
 	};
 
 	enum class MorphCategory : uint8_t
@@ -488,10 +488,10 @@ namespace pmx
 		void Read(std::istream *stream, PmxSetting *setting) override;
 	};
 
-	class PmxMorphImplusOffset : public PmxMorphOffset
+	class PmxMorphImpulseOffset : public PmxMorphOffset
 	{
 	public:
-		PmxMorphImplusOffset()
+		PmxMorphImpulseOffset()
 			: rigid_body_index(0)
 			, is_local(0)
 		{
@@ -538,7 +538,7 @@ namespace pmx
 		/// フリップモーフ配列
 		std::unique_ptr<PmxMorphFlipOffset []> flip_offsets;
 		/// インパルスモーフ配列
-		std::unique_ptr<PmxMorphImplusOffset []> implus_offsets;
+		std::unique_ptr<PmxMorphImpulseOffset []> Impulse_offsets;
 		void Read(std::istream *stream, PmxSetting *setting);
 	};
 

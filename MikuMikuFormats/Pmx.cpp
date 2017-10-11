@@ -80,7 +80,7 @@ namespace pmx
 				std::cout << u_errorName(err) << std::endl;
 				exit(-1);
 			}
-			
+
 			result.assign((const char*)outbuf.data(), size);
 			return result;
 #endif
@@ -324,7 +324,7 @@ namespace pmx
 		stream->read((char*) &this->morph_value, sizeof(float));
 	}
 
-	void PmxMorphImplusOffset::Read(std::istream *stream, PmxSetting *setting)
+	void PmxMorphImpulseOffset::Read(std::istream *stream, PmxSetting *setting)
 	{
 		this->rigid_body_index = ReadIndex(stream, setting->rigidbody_index_size);
 		stream->read((char*) &this->is_local, sizeof(uint8_t));
