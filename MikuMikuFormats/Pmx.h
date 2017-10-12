@@ -364,7 +364,7 @@ namespace pmx
 		AdditionalUV4 = 7,
 		Matrial = 8,
 		Flip = 9,
-		Implus = 10,
+		Impulse = 10,
 	};
 
 	enum class MorphCategory : uint8_t
@@ -488,10 +488,10 @@ namespace pmx
 		void Read(std::istream *stream, PmxSetting *setting) override;
 	};
 
-	class PmxMorphImplusOffset : public PmxMorphOffset
+	class PmxMorphImpulseOffset : public PmxMorphOffset
 	{
 	public:
-		PmxMorphImplusOffset()
+		PmxMorphImpulseOffset()
 			: rigid_body_index(0)
 			, is_local(0)
 		{
@@ -538,7 +538,7 @@ namespace pmx
 		/// フリップモーフ配列
 		std::unique_ptr<PmxMorphFlipOffset []> flip_offsets;
 		/// インパルスモーフ配列
-		std::unique_ptr<PmxMorphImplusOffset []> implus_offsets;
+		std::unique_ptr<PmxMorphImpulseOffset []> Impulse_offsets;
 		void Read(std::istream *stream, PmxSetting *setting);
 	};
 
@@ -602,9 +602,9 @@ namespace pmx
 			}
 		}
 		/// 剛体名
-		utfstring girid_body_name;
+		utfstring rigid_body_name;
 		/// 剛体英名
-		utfstring girid_body_english_name;
+		utfstring rigid_body_english_name;
 		/// 関連ボーンインデックス
 		int target_bone;
 		/// グループ
@@ -683,10 +683,10 @@ namespace pmx
 		Link = 0x04
 	};
 
-	class PmxAncherRigidBody
+	class PmxAnchorRigidBody
 	{
 	public:
-		PmxAncherRigidBody()
+		PmxAnchorRigidBody()
 			: related_rigid_body(0)
 			, related_vertex(0)
 			, is_near(false)
@@ -776,7 +776,7 @@ namespace pmx
 		float AST;
 		float VST;
 		int anchor_count;
-		std::unique_ptr<PmxAncherRigidBody []> anchers;
+		std::unique_ptr<PmxAnchorRigidBody []> anchors;
 		int pin_vertex_count;
 		std::unique_ptr<int []> pin_vertices;
 		void Read(std::istream *stream, PmxSetting *setting);
