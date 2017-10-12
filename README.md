@@ -43,7 +43,7 @@ model.Read(&stream);
 stream.close();
 ```
 
-An sample binary `demo` can be built from `test.cpp`.
+A sample binary `demo` can be built from `test.cpp`.
 ```bash
 ./demo [PMX file path]
 ```
@@ -51,7 +51,7 @@ An sample binary `demo` can be built from `test.cpp`.
 ## License
 
 You can use this library freely.
-I dont't care about your usages.
+I don't care about your usages.
 
 Distributed under CC0 1.0 Universal.
 
