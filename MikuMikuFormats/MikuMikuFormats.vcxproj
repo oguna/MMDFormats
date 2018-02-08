@@ -71,6 +71,7 @@
     <ClInclude Include="Vmd.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Pmd.cpp" />
     <ClCompile Include="Pmx.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
