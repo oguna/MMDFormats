@@ -1,10 +1,6 @@
 #include <utility>
 #include "Pmx.h"
-#ifndef __unix__
 #include "EncodingHelper.h"
-#else
-#include <unicode/ucnv.h>
-#endif
 
 namespace pmx
 {
@@ -53,11 +49,7 @@ namespace pmx
 		std::vector<char> buffer;
 		if (size == 0)
 		{
-#ifndef __unix__
-			return utfstring(L"");
-#else
 			return utfstring("");
-#endif
 		}
 		buffer.reserve(size);
 		stream->read((char*) buffer.data(), size);
@@ -65,7 +57,7 @@ namespace pmx
 		{
 			// UTF16
 #ifndef __unix__
-			return utfstring((wchar_t*) buffer.data(), size / 2);
+			return utfstring(buffer.data(), size/ 2);
 #else
 			utfstring result;
 			std::vector<char> outbuf;
@@ -90,7 +82,7 @@ namespace pmx
 			// UTF8
 #ifndef __unix__
 			utfstring result;
-			converter.Utf8ToUtf16(buffer.data(), size, &result);
+			//converter.Utf8ToUtf16(buffer.data(), size, &result);
 			return result;
 #else
 			return utfstring((const char*)buffer.data(), size);

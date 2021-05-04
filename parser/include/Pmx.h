@@ -8,11 +8,8 @@
 
 namespace pmx
 {
-#ifndef __unix__
-#define utfstring std::wstring
-#else
-#define utfstring std::string
-#endif
+	using utfstring = std::string;
+
 	/// インデックス設定
 	class PmxSetting
 	{
