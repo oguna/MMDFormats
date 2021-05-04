@@ -11,13 +11,18 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    CMAKE_CXX_STANDARD 17
-    CMAKE_CXX_STANDARD_REQUIRED ON
-    CMAKE_CXX_EXTENSIONS OFF
+target_compile_features(${PROJECT_NAME} PUBLIC
+    cxx_std_17
 )
 
-target_link_libraries(${PROJECT_NAME} parser)
+target_compile_options(${PROJECT_NAME} PRIVATE
+    "$<$<C_COMPILER_ID:MSVC>:/utf-8>"
+    "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
+)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    find_package(parser REQUIRED)
+endif(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+target_link_libraries(${PROJECT_NAME} PMX2TXT::parser)
 
 ### Filter Settings for Visual Studio
 # Build the visual studio filter same as source directories form.

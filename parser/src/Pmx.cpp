@@ -1,6 +1,6 @@
 #include <utility>
-#include "Pmx.h"
-#include "EncodingHelper.h"
+#include "pmx2txt/parser/Pmx.h"
+#include "pmx2txt/parser/EncodingHelper.h"
 
 namespace pmx
 {

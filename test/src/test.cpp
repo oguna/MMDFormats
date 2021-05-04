@@ -1,4 +1,4 @@
-#include "Pmx.h"
+#include "pmx2txt/parser/Pmx.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
