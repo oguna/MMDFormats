@@ -21,9 +21,9 @@ namespace pmd
 		/// コメント(英語)
 		std::string comment_english;
 
-		bool Read(std::ifstream* stream);
+		bool parse(std::ifstream& stream);
 
-		bool ReadExtension(std::ifstream* stream);
+		bool parseExtension(std::ifstream& stream);
 	};
 
 	/// 頂点
@@ -48,7 +48,7 @@ namespace pmd
 		/// エッジ不可視
 		bool edge_invisible;
 
-		bool Read(std::ifstream* stream);
+		bool parse(std::ifstream& stream);
 	};
 
 	/// 材質
@@ -74,7 +74,7 @@ namespace pmd
 		/// スフィアファイル名
 		std::string sphere_filename;
 
-		bool Read(std::ifstream* stream);
+		bool parse(std::ifstream& stream);
 	};
 
 	enum class BoneType : uint8_t
@@ -110,9 +110,9 @@ namespace pmd
 		/// ボーンのヘッドの位置
 		float bone_head_pos[3];
 
-		void Read(std::istream *stream);
+		void parse(std::istream& stream);
 
-		void ReadExpantion(std::istream *stream);
+		void parseExpantion(std::istream& stream);
 	};
 
 	/// IK
@@ -130,7 +130,7 @@ namespace pmd
 		/// 影響下ボーン番号
 		std::vector<uint16_t> ik_child_bone_index;
 
-		void Read(std::istream *stream);
+		void parse(std::istream& stream);
 	};
 
 	class PmdFaceVertex
@@ -139,7 +139,7 @@ namespace pmd
 		int vertex_index;
 		float position[3];
 
-		void Read(std::istream *stream);
+		void parse(std::istream& stream);
 	};
 
 	enum class FaceCategory : uint8_t
@@ -159,9 +159,9 @@ namespace pmd
 		std::vector<PmdFaceVertex> vertices;
 		std::string name_english;
 
-		void Read(std::istream *stream);
+		void parse(std::istream& stream);
 
-		void ReadExpantion(std::istream *stream);
+		void parseExpantion(std::istream& stream);
 	};
 
 	/// ボーン枠用の枠名
@@ -171,9 +171,9 @@ namespace pmd
 		std::string bone_disp_name;
 		std::string bone_disp_name_english;
 
-		void Read(std::istream *stream);
+		void parse(std::istream& stream);
 
-		void ReadExpantion(std::istream *stream);
+		void parseExpantion(std::istream& stream);
 	};
 
 	class PmdBoneDisp
@@ -182,7 +182,7 @@ namespace pmd
 		uint16_t bone_index;
 		uint8_t bone_disp_index;
 
-		void Read(std::istream *stream);
+		void parse(std::istream& stream);
 	};
 
 	/// 衝突形状
@@ -240,7 +240,7 @@ namespace pmd
 		/// 演算方法
 		RigidBodyType rigid_type;
 
-		void Read(std::istream *stream);
+		void parse(std::istream& stream);
 	};
 
 	/// 剛体の拘束
@@ -270,7 +270,7 @@ namespace pmd
 		/// 回転に対する復元力
 		float angular_stiffness[3];
 
-		void Read(std::istream *stream);
+		void parse(std::istream& stream);
 	};
 
 	/// PMDモデル
@@ -295,6 +295,6 @@ namespace pmd
 		static std::unique_ptr<PmdModel> LoadFromFile(const char *filename);
 
 		/// ファイルからPmdModelを生成する
-		static std::unique_ptr<PmdModel> LoadFromStream(std::ifstream *stream);
+		static std::unique_ptr<PmdModel> LoadFromStream(std::ifstream& stream);
 	};
 }
