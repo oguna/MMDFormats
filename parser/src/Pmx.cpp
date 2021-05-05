@@ -39,19 +39,26 @@ namespace {
 		}
 	}
 
-	size_t dumpIndex(std::ostream& stream, int index, int size)
+	size_t dumpIndex(std::ostream& stream, const int index, int size)
 	{
 		switch (size)
 		{
-		case 1:
-			stream.write(static_cast<char*>(static_cast<void*>(&index)), sizeof(uint8_t));
+		case 1: {
+			const uint8_t data = static_cast<const uint8_t>(index);
+			stream.write(static_cast<const char*>(static_cast<const void*>(&data)), sizeof(uint8_t));
 			return stream.good() ? sizeof(uint8_t) : 0;
+		}
 		case 2:
-			stream.write(static_cast<char*>(static_cast<void*>(&index)), sizeof(uint16_t));
+		{
+			const uint16_t data = static_cast<const uint16_t>(index);
+			stream.write(static_cast<const char*>(static_cast<const void*>(&data)), sizeof(uint16_t));
 			return stream.good() ? sizeof(uint16_t) : 0;
+		}
 		case 4:
-			stream.write(static_cast<char*>(static_cast<void*>(&index)), sizeof(int));
+		{
+			stream.write(static_cast<const char*>(static_cast<const void*>(&index)), sizeof(int));
 			return stream.good() ? sizeof(int) : 0;
+		}
 		default:
 			throw std::runtime_error("No such index size");
 		}
@@ -95,7 +102,7 @@ namespace {
 			// UTF16
 			std::wstring utf16str = utf8_to_wide(str);
 
-			total = utf16str.length() *(sizeof(wchar_t) / sizeof(uint8_t));
+			total = utf16str.length() * (sizeof(wchar_t) / sizeof(uint8_t));
 			buf.resize(total);
 			std::memcpy(buf.data(), utf16str.data(), total);
 		}
@@ -107,7 +114,7 @@ namespace {
 		}
 		stream.write(static_cast<char*>(static_cast<void*>(&total)), sizeof(int));
 		stream.write(static_cast<char*>(static_cast<void*>(buf.data())), buf.size());
-		return total+ sizeof(int);
+		return total + sizeof(int);
 	}
 }
 
@@ -198,7 +205,7 @@ std::size_t pmx::PmxVertexSkinningBDEF4::dump(std::ostream& stream, PmxSetting* 
 	stream.write(static_cast<char*>(static_cast<void*>(&this->bone_weight2)), sizeof(float));
 	stream.write(static_cast<char*>(static_cast<void*>(&this->bone_weight3)), sizeof(float));
 	stream.write(static_cast<char*>(static_cast<void*>(&this->bone_weight4)), sizeof(float));
-	total += sizeof(float)*4;
+	total += sizeof(float) * 4;
 	return total;
 }
 
@@ -217,10 +224,11 @@ std::size_t pmx::PmxVertexSkinningSDEF::dump(std::ostream& stream, PmxSetting* s
 	std::size_t total{ 0 };
 	total += dumpIndex(stream, this->bone_index1, setting->bone_index_size);
 	total += dumpIndex(stream, this->bone_index2, setting->bone_index_size);
-	stream.write(static_cast<char*>(static_cast<void*>(this->sdef_c)), sizeof(float)*3);
-	stream.write(static_cast<char*>(static_cast<void*>(this->sdef_r0)), sizeof(float)*3);
-	stream.write(static_cast<char*>(static_cast<void*>(this->sdef_r1)), sizeof(float)*3);
-	total += sizeof(float) * 12;
+	stream.write(static_cast<char*>(static_cast<void*>(&this->bone_weight)), sizeof(float));
+	stream.write(static_cast<char*>(static_cast<void*>(this->sdef_c)), sizeof(float) * 3);
+	stream.write(static_cast<char*>(static_cast<void*>(this->sdef_r0)), sizeof(float) * 3);
+	stream.write(static_cast<char*>(static_cast<void*>(this->sdef_r1)), sizeof(float) * 3);
+	total += sizeof(float) * 13;
 	return total;
 }
 
@@ -293,7 +301,7 @@ void pmx::PmxVertex::parse(std::istream& stream, PmxSetting* setting)
 std::size_t pmx::PmxVertex::dump(std::ostream& stream, PmxSetting* setting)
 {
 	std::size_t total{ 0 };
-	stream.write(static_cast<char*>(static_cast<void*>(this->positon)), sizeof(float)*3);
+	stream.write(static_cast<char*>(static_cast<void*>(this->positon)), sizeof(float) * 3);
 	stream.write(static_cast<char*>(static_cast<void*>(this->normal)), sizeof(float) * 3);
 	stream.write(static_cast<char*>(static_cast<void*>(this->uv)), sizeof(float) * 2);
 	total += sizeof(float) * 8;
@@ -464,12 +472,12 @@ std::size_t pmx::PmxBone::dump(std::ostream& stream, PmxSetting* setting)
 		total += sizeof(float);
 	}
 	if (this->bone_flag & 0x0400) {
-		stream.write(static_cast<char*>(static_cast<void*>(&this->lock_axis_orientation)), sizeof(float) * 3);
+		stream.write(static_cast<char*>(static_cast<void*>(this->lock_axis_orientation)), sizeof(float) * 3);
 		total += sizeof(float) * 3;
 	}
 	if (this->bone_flag & 0x0800) {
-		stream.write(static_cast<char*>(static_cast<void*>(&this->local_axis_x_orientation)), sizeof(float) * 3);
-		stream.write(static_cast<char*>(static_cast<void*>(&this->local_axis_y_orientation)), sizeof(float) * 3);
+		stream.write(static_cast<char*>(static_cast<void*>(this->local_axis_x_orientation)), sizeof(float) * 3);
+		stream.write(static_cast<char*>(static_cast<void*>(this->local_axis_y_orientation)), sizeof(float) * 3);
 		total += sizeof(float) * 6;
 	}
 	if (this->bone_flag & 0x2000) {
@@ -619,8 +627,8 @@ std::size_t pmx::PmxMorphImpulseOffset::dump(std::ostream& stream, PmxSetting* s
 	std::size_t total{ 0 };
 	total += dumpIndex(stream, this->rigid_body_index, setting->rigidbody_index_size);
 	stream.write(static_cast<char*>(static_cast<void*>(&this->is_local)), sizeof(uint8_t));
-	stream.write(static_cast<char*>(static_cast<void*>(&this->velocity)), sizeof(float)*3);
-	stream.write(static_cast<char*>(static_cast<void*>(&this->angular_torque)), sizeof(float)*3);
+	stream.write(static_cast<char*>(static_cast<void*>(&this->velocity)), sizeof(float) * 3);
+	stream.write(static_cast<char*>(static_cast<void*>(&this->angular_torque)), sizeof(float) * 3);
 	total += sizeof(float) * 6 + sizeof(uint8_t);
 	return total;
 }
@@ -834,8 +842,8 @@ std::size_t pmx::PmxRigidBody::dump(std::ostream& stream, PmxSetting* setting)
 	stream.write(static_cast<char*>(static_cast<void*>(&this->repulsion)), sizeof(float));
 	stream.write(static_cast<char*>(static_cast<void*>(&this->friction)), sizeof(float));
 	stream.write(static_cast<char*>(static_cast<void*>(&this->physics_calc_type)), sizeof(uint8_t));
-	
-	total += sizeof(float)*14 + sizeof(uint16_t) + sizeof(uint8_t)*3;
+
+	total += sizeof(float) * 14 + sizeof(uint16_t) + sizeof(uint8_t) * 3;
 	return total;
 }
 
@@ -1065,7 +1073,7 @@ std::size_t pmx::PmxModel::dump(std::ostream& stream)
 {
 	std::size_t total{ 0 };
 	// マジック
-	constexpr char magic[4] = {0x50, 0x4d, 0x58, 0x20};
+	constexpr char magic[4] = { 0x50, 0x4d, 0x58, 0x20 };
 	stream.write(magic, sizeof(char) * 4);
 	total += sizeof(char) * 4;
 
@@ -1082,7 +1090,7 @@ std::size_t pmx::PmxModel::dump(std::ostream& stream)
 	total += dumpString(stream, this->model_english_name, setting.encoding);
 	total += dumpString(stream, this->model_comment, setting.encoding);
 	total += dumpString(stream, this->model_english_comment, setting.encoding);
-	
+
 	// 頂点
 	stream.write(static_cast<char*>(static_cast<void*>(&this->vertex_count)), sizeof(int));
 	total += sizeof(int);
