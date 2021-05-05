@@ -1,19 +1,14 @@
-#include "Pmx.h"
+#include "pmx2txt/parser/Pmx.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <iomanip>
 
-#ifndef __unix__
-#define utfcout std::wcout
-#else
-#define utfcout std::cout
-#endif
-
-#define PRINT(x, y) utfcout << std::setw(24) << x << ":" \
+#define PRINT(x, y) std::cout << std::setw(24) << x << ":" \
                             << std::setw(24) << std::right << y << std::endl;
 
 int main(int argc, char *argv[]) {
-    if(argc != 2) {
+    if(argc < 2) {
         std::cout << "Usage: ./demo [PMX file path]" << std::endl;
         return 0;
     }
@@ -25,7 +20,10 @@ int main(int argc, char *argv[]) {
 
     std::istream is(&fb);
     pmx::PmxModel x;
-    x.Read(&is);
+    x.parse(is);
+
+    std::ofstream tmpOut("tmp.bin", std::ios::out|std::ios::binary);
+    x.dump(tmpOut);
     
     PRINT("PMX version", x.version)
     PRINT("Model Name", x.model_name)
