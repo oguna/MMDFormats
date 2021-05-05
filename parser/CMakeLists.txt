@@ -9,6 +9,10 @@ include(GNUInstallDirs)
 
 option(PMX2TXT_INSTALL "Install the parser" ON)
 
+if(not MSVC)
+message(FATAL_ERROR "PMX2TXT::${PROJECT_NAME} works in Windows environment only!")
+endif(not MSVC)
+
 add_library(${PROJECT_NAME})
 add_library(PMX2TXT::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
