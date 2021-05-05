@@ -11,7 +11,8 @@ namespace {
 		switch (size)
 		{
 		case 1:
-			uint8_t tmp8;
+		{
+			uint8_t tmp8{};
 			stream.read((char*)&tmp8, sizeof(uint8_t));
 			if (255 == tmp8)
 			{
@@ -20,8 +21,10 @@ namespace {
 			else {
 				return (int)tmp8;
 			}
+		}
 		case 2:
-			uint16_t tmp16;
+		{
+			uint16_t tmp16{};
 			stream.read((char*)&tmp16, sizeof(uint16_t));
 			if (65535 == tmp16)
 			{
@@ -30,10 +33,13 @@ namespace {
 			else {
 				return (int)tmp16;
 			}
+		}
 		case 4:
-			int tmp32;
+		{
+			int tmp32{};
 			stream.read((char*)&tmp32, sizeof(int));
 			return tmp32;
+		}
 		default:
 			return -1;
 		}
@@ -67,7 +73,7 @@ namespace {
 	/// 文字列を読み込む
 	std::string parseString(std::istream& stream, uint8_t encoding)
 	{
-		int size;
+		int size{};
 		stream.read((char*)&size, sizeof(int));
 		std::vector<char> buffer;
 		if (size == 0)
@@ -94,7 +100,7 @@ namespace {
 
 	size_t dumpString(std::ostream& stream, const std::string& str, uint8_t encoding)
 	{
-		int total{ 0 };
+		size_t total{ 0 };
 		std::vector<uint8_t> buf{};
 
 		if (encoding == 0)
@@ -120,7 +126,7 @@ namespace {
 
 void pmx::PmxSetting::parse(std::istream& stream)
 {
-	uint8_t count;
+	uint8_t count{};
 	stream.read((char*)&count, sizeof(uint8_t));
 	if (count < 8)
 	{
@@ -134,7 +140,7 @@ void pmx::PmxSetting::parse(std::istream& stream)
 	stream.read((char*)&bone_index_size, sizeof(uint8_t));
 	stream.read((char*)&morph_index_size, sizeof(uint8_t));
 	stream.read((char*)&rigidbody_index_size, sizeof(uint8_t));
-	uint8_t temp;
+	uint8_t temp{};
 	for (int i = 8; i < count; i++)
 	{
 		stream.read((char*)&temp, sizeof(uint8_t));
@@ -962,7 +968,7 @@ void pmx::PmxModel::Init()
 void pmx::PmxModel::parse(std::istream& stream)
 {
 	// マジック
-	char magic[4];
+	char magic[4]{};
 	stream.read((char*)magic, sizeof(char) * 4);
 	if (magic[0] != 0x50 || magic[1] != 0x4d || magic[2] != 0x58 || magic[3] != 0x20)
 	{

@@ -460,8 +460,8 @@ namespace pmx
 				toon_texture_argb[i] = 0.0f;
 			}
 		}
-		int material_index;
-		uint8_t offset_operation;
+		int material_index = -1;
+		uint8_t offset_operation = -1;
 		float diffuse[4];
 		float specular[3];
 		float specularity;
@@ -534,9 +534,9 @@ namespace pmx
 		/// モーフ英名
 		std::string morph_english_name;
 		/// カテゴリ
-		MorphCategory category;
+		MorphCategory category = static_cast<MorphCategory>(-1);
 		/// モーフタイプ
-		MorphType morph_type;
+		MorphType morph_type = static_cast<MorphType>(-1);
 		/// オフセット数
 		int offset_count;
 		/// 頂点モーフ配列
@@ -690,7 +690,7 @@ namespace pmx
 	public:
 		std::string joint_name;
 		std::string joint_english_name;
-		PmxJointType joint_type;
+		PmxJointType joint_type = static_cast<PmxJointType>(-1);
 		PmxJointParam param;
 		void parse(std::istream& stream, PmxSetting *setting);
 		std::size_t dump(std::ostream& stream, PmxSetting* setting);
