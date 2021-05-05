@@ -8,8 +8,6 @@
 
 namespace pmx
 {
-	using utfstring = std::string;
-
 	/// インデックス設定
 	class PmxSetting
 	{
@@ -223,9 +221,9 @@ namespace pmx
 		}
 
 		/// モデル名
-		utfstring material_name;
+		std::string material_name;
 		/// モデル英名
-		utfstring material_english_name;
+		std::string material_english_name;
 		/// 減衰色
 		float diffuse[4];
 		/// 光沢色
@@ -251,7 +249,7 @@ namespace pmx
 		/// トゥーンテクスチャインデックス
 		int toon_texture_index;
 		/// メモ
-		utfstring memo;
+		std::string memo;
 		/// 頂点インデックス数
 		int index_count;
 		void Read(std::istream *stream, PmxSetting *setting);
@@ -309,9 +307,9 @@ namespace pmx
 		}
 
 		/// ボーン名
-		utfstring bone_name;
+		std::string bone_name;
 		/// ボーン英名
-		utfstring bone_english_name;
+		std::string bone_english_name;
 		/// 位置
 		float position[3];
 		/// 親ボーンインデックス
@@ -513,9 +511,9 @@ namespace pmx
 		{
 		}
 		/// モーフ名
-		utfstring morph_name;
+		std::string morph_name;
 		/// モーフ英名
-		utfstring morph_english_name;
+		std::string morph_english_name;
 		/// カテゴリ
 		MorphCategory category;
 		/// モーフタイプ
@@ -565,9 +563,9 @@ namespace pmx
 		{
 		}
 		/// 枠名
-		utfstring frame_name;
+		std::string frame_name;
 		/// 枠英名
-		utfstring frame_english_name;
+		std::string frame_english_name;
 		/// 特殊枠フラグ
 		uint8_t frame_flag;
 		/// 枠内要素数
@@ -599,9 +597,9 @@ namespace pmx
 			}
 		}
 		/// 剛体名
-		utfstring rigid_body_name;
+		std::string rigid_body_name;
 		/// 剛体英名
-		utfstring rigid_body_english_name;
+		std::string rigid_body_english_name;
 		/// 関連ボーンインデックス
 		int target_bone;
 		/// グループ
@@ -666,8 +664,8 @@ namespace pmx
 	class PmxJoint
 	{
 	public:
-		utfstring joint_name;
-		utfstring joint_english_name;
+		std::string joint_name;
+		std::string joint_english_name;
 		PmxJointType joint_type;
 		PmxJointParam param;
 		void Read(std::istream *stream, PmxSetting *setting);
@@ -735,8 +733,8 @@ namespace pmx
 			, anchor_count(0)
 			, pin_vertex_count(0)
 		{}
-		utfstring soft_body_name;
-		utfstring soft_body_english_name;
+		std::string soft_body_name;
+		std::string soft_body_english_name;
 		uint8_t shape;
 		int target_material;
 		uint8_t group;
@@ -802,13 +800,13 @@ namespace pmx
 		/// 設定
 		PmxSetting setting;
 		/// モデル名
-		utfstring model_name;
+		std::string model_name;
 		/// モデル英名
-		utfstring model_english_name;
+		std::string model_english_name;
 		/// コメント
-		utfstring model_comment;
+		std::string model_comment;
 		/// 英語コメント
-		utfstring model_english_comment;
+		std::string model_english_comment;
 		/// 頂点数
 		int vertex_count;
 		/// 頂点配列
@@ -820,7 +818,7 @@ namespace pmx
 		/// テクスチャ数
 		int texture_count;
 		/// テクスチャ配列
-		std::unique_ptr< utfstring []> textures;
+		std::unique_ptr< std::string []> textures;
 		/// マテリアル数
 		int material_count;
 		/// マテリアル

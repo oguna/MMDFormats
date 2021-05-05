@@ -1,6 +1,6 @@
 #include <utility>
 #include "pmx2txt/parser/Pmx.h"
-#include "pmx2txt/parser/EncodingHelper.h"
+#include "javacommons/strconv.h"
 
 namespace pmx
 {
@@ -39,54 +39,30 @@ namespace pmx
 	}
 
 	/// 文字列を読み込む
-	utfstring ReadString(std::istream *stream, uint8_t encoding)
+	std::string ReadString(std::istream *stream, uint8_t encoding)
 	{
-#ifndef __unix__
-		oguna::EncodingConverter converter = oguna::EncodingConverter();
-#endif
 		int size;
 		stream->read((char*) &size, sizeof(int));
 		std::vector<char> buffer;
 		if (size == 0)
 		{
-			return utfstring("");
+			return std::string("");
 		}
 		buffer.reserve(size);
 		stream->read((char*) buffer.data(), size);
 		if (encoding == 0)
 		{
 			// UTF16
-#ifndef __unix__
-			return utfstring(buffer.data(), size/ 2);
-#else
-			utfstring result;
-			std::vector<char> outbuf;
-			outbuf.reserve(size*2);
-
-			// Always remember to set U_ZERO_ERROR before calling ucnv_convert(),
-			// otherwise the function will fail.
-			UErrorCode err = U_ZERO_ERROR;
-			size = ucnv_convert("UTF-8", "UTF-16LE", (char*)outbuf.data(), outbuf.capacity(), buffer.data(), size, &err);
-			if(!U_SUCCESS(err)) {
-				std::cout << "oops, something wrong?" << std::endl;
-				std::cout << u_errorName(err) << std::endl;
-				exit(-1);
-			}
-
-			result.assign((const char*)outbuf.data(), size);
-			return result;
-#endif
+			std::wstring tmpwstr(
+				static_cast<wchar_t*>(
+					static_cast<void*>(buffer.data())
+				), size / 2);
+			return wide_to_utf8(tmpwstr);
 		}
 		else
 		{
 			// UTF8
-#ifndef __unix__
-			utfstring result;
-			//converter.Utf8ToUtf16(buffer.data(), size, &result);
-			return result;
-#else
-			return utfstring((const char*)buffer.data(), size);
-#endif
+			return std::string(buffer.data(), size);
 		}
 	}
 
@@ -530,7 +506,7 @@ namespace pmx
 
 		// テクスチャ
 		stream->read((char*) &texture_count, sizeof(int));
-		this->textures = std::make_unique<utfstring []>(texture_count);
+		this->textures = std::make_unique<std::string []>(texture_count);
 		for (int i = 0; i < texture_count; i++)
 		{
 			this->textures[i] = ReadString(stream, setting.encoding);

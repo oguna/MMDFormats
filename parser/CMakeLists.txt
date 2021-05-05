@@ -9,19 +9,16 @@ include(GNUInstallDirs)
 
 option(PMX2TXT_INSTALL "Install the parser" ON)
 
-file(GLOB_RECURSE parser_cpp src/*.cpp)
-file(GLOB_RECURSE parser_hpp include/*.h)
-
 add_library(${PROJECT_NAME})
 add_library(PMX2TXT::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME}
 PUBLIC
-    include/pmx2txt/parser/EncodingHelper.h
     include/pmx2txt/parser/Pmd.h
     include/pmx2txt/parser/Pmx.h
     include/pmx2txt/parser/Vmd.h
 PRIVATE
+    include/javacommons/strconv.h
     src/Pmd.cpp
     src/Pmx.cpp
 )
