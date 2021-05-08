@@ -116,6 +116,17 @@ namespace {
 	}
 }
 
+pmx::PmxSetting::PmxSetting() noexcept
+	: encoding(0)
+	, uv(0)
+	, vertex_index_size(0)
+	, texture_index_size(0)
+	, material_index_size(0)
+	, bone_index_size(0)
+	, morph_index_size(0)
+	, rigidbody_index_size(0)
+{}
+
 void pmx::PmxSetting::parse(std::istream& stream)
 {
 	uint8_t count{};
@@ -153,6 +164,10 @@ std::size_t pmx::PmxSetting::dump(std::ostream& stream)
 	return 9u;
 }
 
+pmx::PmxVertexSkinningBDEF1::PmxVertexSkinningBDEF1() noexcept
+	: bone_index(0)
+{}
+
 void pmx::PmxVertexSkinningBDEF1::parse(std::istream& stream, PmxSetting* setting)
 {
 	this->bone_index = parseIndex(stream, setting->bone_index_size);
@@ -162,6 +177,12 @@ std::size_t pmx::PmxVertexSkinningBDEF1::dump(std::ostream& stream, PmxSetting* 
 {
 	return dumpIndex(stream, this->bone_index, setting->bone_index_size);
 }
+
+pmx::PmxVertexSkinningBDEF2::PmxVertexSkinningBDEF2() noexcept
+	: bone_index1(0)
+	, bone_index2(0)
+	, bone_weight(0.0f)
+{}
 
 void pmx::PmxVertexSkinningBDEF2::parse(std::istream& stream, PmxSetting* setting)
 {
@@ -179,6 +200,17 @@ std::size_t pmx::PmxVertexSkinningBDEF2::dump(std::ostream& stream, PmxSetting* 
 	total += sizeof(float);
 	return total;
 }
+
+pmx::PmxVertexSkinningBDEF4::PmxVertexSkinningBDEF4() noexcept
+	: bone_index1(0)
+	, bone_index2(0)
+	, bone_index3(0)
+	, bone_index4(0)
+	, bone_weight1(0.0f)
+	, bone_weight2(0.0f)
+	, bone_weight3(0.0f)
+	, bone_weight4(0.0f)
+{}
 
 void pmx::PmxVertexSkinningBDEF4::parse(std::istream& stream, PmxSetting* setting)
 {
@@ -207,6 +239,15 @@ std::size_t pmx::PmxVertexSkinningBDEF4::dump(std::ostream& stream, PmxSetting* 
 	return total;
 }
 
+pmx::PmxVertexSkinningSDEF::PmxVertexSkinningSDEF() noexcept : bone_index1(0), bone_index2(0), bone_weight(0.0f)
+{
+	for (int i = 0; i < 3; ++i) {
+		sdef_c[i] = 0.0f;
+		sdef_r0[i] = 0.0f;
+		sdef_r1[i] = 0.0f;
+	}
+}
+
 void pmx::PmxVertexSkinningSDEF::parse(std::istream& stream, PmxSetting* setting)
 {
 	this->bone_index1 = parseIndex(stream, setting->bone_index_size);
@@ -229,6 +270,17 @@ std::size_t pmx::PmxVertexSkinningSDEF::dump(std::ostream& stream, PmxSetting* s
 	total += sizeof(float) * 13;
 	return total;
 }
+
+pmx::PmxVertexSkinningQDEF::PmxVertexSkinningQDEF() noexcept
+	: bone_index1(0)
+	, bone_index2(0)
+	, bone_index3(0)
+	, bone_index4(0)
+	, bone_weight1(0.0f)
+	, bone_weight2(0.0f)
+	, bone_weight3(0.0f)
+	, bone_weight4(0.0f)
+{}
 
 void pmx::PmxVertexSkinningQDEF::parse(std::istream& stream, PmxSetting* setting)
 {
@@ -255,6 +307,21 @@ std::size_t pmx::PmxVertexSkinningQDEF::dump(std::ostream& stream, PmxSetting* s
 	stream.write(static_cast<char*>(static_cast<void*>(&this->bone_weight4)), sizeof(float));
 	total += sizeof(float) * 4;
 	return total;
+}
+
+pmx::PmxVertex::PmxVertex() noexcept
+: edge(0.0f)
+{
+	uv[0] = uv[1] = 0.0f;
+	for (int i = 0; i < 3; ++i) {
+		positon[i] = 0.0f;
+		normal[i] = 0.0f;
+	}
+	for (int i = 0; i < 4; ++i) {
+		for (int k = 0; k < 4; ++k) {
+			uva[i][k] = 0.0f;
+		}
+	}
 }
 
 void pmx::PmxVertex::parse(std::istream& stream, PmxSetting* setting)
@@ -316,6 +383,27 @@ std::size_t pmx::PmxVertex::dump(std::ostream& stream, PmxSetting* setting)
 	return total;
 }
 
+pmx::PmxMaterial::PmxMaterial() noexcept
+	: specularlity(0.0f)
+	, flag(0)
+	, edge_size(0.0f)
+	, diffuse_texture_index(0)
+	, sphere_texture_index(0)
+	, sphere_op_mode(0)
+	, common_toon_flag(0)
+	, toon_texture_index(0)
+	, index_count(0)
+{
+	for (int i = 0; i < 3; ++i) {
+		specular[i] = 0.0f;
+		ambient[i] = 0.0f;
+		edge_color[i] = 0.0f;
+	}
+	for (int i = 0; i < 4; ++i) {
+		diffuse[i] = 0.0f;
+	}
+}
+
 void pmx::PmxMaterial::parse(std::istream& stream, PmxSetting* setting)
 {
 	this->material_name = std::move(parseString(stream, setting->encoding));
@@ -374,6 +462,16 @@ std::size_t pmx::PmxMaterial::dump(std::ostream& stream, PmxSetting* setting)
 	return total;
 }
 
+pmx::PmxIkLink::PmxIkLink() noexcept
+	: link_target(0)
+	, angle_lock(0)
+{
+	for (int i = 0; i < 3; ++i) {
+		max_radian[i] = 0.0f;
+		min_radian[i] = 0.0f;
+	}
+}
+
 void pmx::PmxIkLink::parse(std::istream& stream, PmxSetting* setting)
 {
 	this->link_target = parseIndex(stream, setting->bone_index_size);
@@ -398,6 +496,28 @@ std::size_t pmx::PmxIkLink::dump(std::ostream& stream, PmxSetting* setting)
 		total += sizeof(float) * 6;
 	}
 	return total;
+}
+
+pmx::PmxBone::PmxBone() noexcept
+	: parent_index(0)
+	, level(0)
+	, bone_flag(0)
+	, target_index(0)
+	, grant_parent_index(0)
+	, grant_weight(0.0f)
+	, key(0)
+	, ik_target_bone_index(0)
+	, ik_loop(0)
+	, ik_loop_angle_limit(0.0f)
+	, ik_link_count(0)
+{
+	for (int i = 0; i < 3; ++i) {
+		position[i] = 0.0f;
+		offset[i] = 0.0f;
+		lock_axis_orientation[i] = 0.0f;
+		local_axis_x_orientation[i] = 0.0f;
+		local_axis_y_orientation[i] = 0.0f;
+	}
 }
 
 void pmx::PmxBone::parse(std::istream& stream, PmxSetting* setting)
@@ -502,6 +622,14 @@ std::size_t pmx::PmxBone::dump(std::ostream& stream, PmxSetting* setting)
 	return total;
 }
 
+pmx::PmxMorphVertexOffset::PmxMorphVertexOffset() noexcept
+	: vertex_index(0)
+{
+	for (int i = 0; i < 3; ++i) {
+		position_offset[i] = 0.0f;
+	}
+}
+
 void pmx::PmxMorphVertexOffset::parse(std::istream& stream, PmxSetting* setting)
 {
 	this->vertex_index = parseIndex(stream, setting->vertex_index_size);
@@ -515,6 +643,14 @@ std::size_t pmx::PmxMorphVertexOffset::dump(std::ostream& stream, PmxSetting* se
 	stream.write(static_cast<char*>(static_cast<void*>(&this->position_offset)), sizeof(float) * 3);
 	total += sizeof(float) * 3;
 	return total;
+}
+
+pmx::PmxMorphUVOffset::PmxMorphUVOffset() noexcept
+	: vertex_index(0)
+{
+	for (int i = 0; i < 4; ++i) {
+		uv_offset[i] = 0.0f;
+	}
 }
 
 void pmx::PmxMorphUVOffset::parse(std::istream& stream, PmxSetting* setting)
@@ -532,6 +668,17 @@ std::size_t pmx::PmxMorphUVOffset::dump(std::ostream& stream, PmxSetting* settin
 	return total;
 }
 
+pmx::PmxMorphBoneOffset::PmxMorphBoneOffset() noexcept
+	: bone_index(0)
+{
+	for (int i = 0; i < 3; ++i) {
+		translation[i] = 0.0f;
+	}
+	for (int i = 0; i < 4; ++i) {
+		rotation[i] = 0.0f;
+	}
+}
+
 void pmx::PmxMorphBoneOffset::parse(std::istream& stream, PmxSetting* setting)
 {
 	this->bone_index = parseIndex(stream, setting->bone_index_size);
@@ -547,6 +694,23 @@ std::size_t pmx::PmxMorphBoneOffset::dump(std::ostream& stream, PmxSetting* sett
 	stream.write(static_cast<char*>(static_cast<void*>(&this->rotation)), sizeof(float) * 4);
 	total += sizeof(float) * 7;
 	return total;
+}
+
+pmx::PmxMorphMaterialOffset::PmxMorphMaterialOffset() noexcept
+	: specularity(0.0f)
+	, edge_size(0.0f)
+{
+	for (int i = 0; i < 3; ++i) {
+		specular[i] = 0.0f;
+		ambient[i] = 0.0f;
+	}
+	for (int i = 0; i < 4; ++i) {
+		diffuse[i] = 0.0f;
+		edge_color[i] = 0.0f;
+		texture_argb[i] = 0.0f;
+		sphere_texture_argb[i] = 0.0f;
+		toon_texture_argb[i] = 0.0f;
+	}
 }
 
 void pmx::PmxMorphMaterialOffset::parse(std::istream& stream, PmxSetting* setting)
@@ -582,6 +746,11 @@ std::size_t pmx::PmxMorphMaterialOffset::dump(std::ostream& stream, PmxSetting* 
 	return total;
 }
 
+pmx::PmxMorphGroupOffset::PmxMorphGroupOffset() noexcept
+	: morph_index(0)
+	, morph_weight(0.0f)
+{}
+
 void pmx::PmxMorphGroupOffset::parse(std::istream& stream, PmxSetting* setting)
 {
 	this->morph_index = parseIndex(stream, setting->morph_index_size);
@@ -597,6 +766,11 @@ std::size_t pmx::PmxMorphGroupOffset::dump(std::ostream& stream, PmxSetting* set
 	return total;
 }
 
+pmx::PmxMorphFlipOffset::PmxMorphFlipOffset() noexcept
+	: morph_index(0)
+	, morph_value(0.0f)
+{}
+
 void pmx::PmxMorphFlipOffset::parse(std::istream& stream, PmxSetting* setting)
 {
 	this->morph_index = parseIndex(stream, setting->morph_index_size);
@@ -610,6 +784,16 @@ std::size_t pmx::PmxMorphFlipOffset::dump(std::ostream& stream, PmxSetting* sett
 	stream.write(static_cast<char*>(static_cast<void*>(&this->morph_value)), sizeof(float));
 	total += sizeof(float);
 	return total;
+}
+
+pmx::PmxMorphImpulseOffset::PmxMorphImpulseOffset() noexcept
+	: rigid_body_index(0)
+	, is_local(0)
+{
+	for (int i = 0; i < 3; ++i) {
+		velocity[i] = 0.0f;
+		angular_torque[i] = 0.0f;
+	}
 }
 
 void pmx::PmxMorphImpulseOffset::parse(std::istream& stream, PmxSetting* setting)
@@ -629,6 +813,11 @@ std::size_t pmx::PmxMorphImpulseOffset::dump(std::ostream& stream, PmxSetting* s
 	stream.write(static_cast<char*>(static_cast<void*>(&this->angular_torque)), sizeof(float) * 3);
 	total += sizeof(float) * 6 + sizeof(uint8_t);
 	return total;
+}
+
+pmx::PmxMorph::PmxMorph() noexcept
+	: offset_count(0)
+{
 }
 
 void pmx::PmxMorph::parse(std::istream& stream, PmxSetting* setting)
@@ -742,6 +931,12 @@ std::size_t pmx::PmxMorph::dump(std::ostream& stream, PmxSetting* setting)
 	return total;
 }
 
+pmx::PmxFrameElement::PmxFrameElement() noexcept
+	: element_target(0)
+	, index(0)
+{
+}
+
 void pmx::PmxFrameElement::parse(std::istream& stream, PmxSetting* setting)
 {
 	stream.read((char*)&this->element_target, sizeof(uint8_t));
@@ -767,6 +962,12 @@ std::size_t pmx::PmxFrameElement::dump(std::ostream& stream, PmxSetting* setting
 		total += dumpIndex(stream, this->index, setting->morph_index_size);
 	}
 	return total;
+}
+
+pmx::PmxFrame::PmxFrame() noexcept
+	: frame_flag(0)
+	, element_count(0)
+{
 }
 
 void pmx::PmxFrame::parse(std::istream& stream, PmxSetting* setting)
@@ -800,6 +1001,25 @@ std::size_t pmx::PmxFrame::dump(std::ostream& stream, PmxSetting* setting)
 		total += this->elements[i].dump(stream, setting);
 	}
 	return total;
+}
+
+pmx::PmxRigidBody::PmxRigidBody() noexcept
+	: target_bone(0)
+	, group(0)
+	, mask(0)
+	, shape(0)
+	, mass(0.0f)
+	, move_attenuation(0.0f)
+	, rotation_attenuation(0.0f)
+	, repulsion(0.0f)
+	, friction(0.0f)
+	, physics_calc_type(0)
+{
+	for (int i = 0; i < 3; ++i) {
+		size[i] = 0.0f;
+		position[i] = 0.0f;
+		orientation[i] = 0.0f;
+	}
 }
 
 void pmx::PmxRigidBody::parse(std::istream& stream, PmxSetting* setting)
@@ -843,6 +1063,22 @@ std::size_t pmx::PmxRigidBody::dump(std::ostream& stream, PmxSetting* setting)
 
 	total += sizeof(float) * 14 + sizeof(uint16_t) + sizeof(uint8_t) * 3;
 	return total;
+}
+
+pmx::PmxJointParam::PmxJointParam() noexcept
+	: rigid_body1(0)
+	, rigid_body2(0)
+{
+	for (int i = 0; i < 3; ++i) {
+		position[i] = 0.0f;
+		orientaiton[i] = 0.0f;
+		move_limitation_min[i] = 0.0f;
+		move_limitation_max[i] = 0.0f;
+		rotation_limitation_min[i] = 0.0f;
+		rotation_limitation_max[i] = 0.0f;
+		spring_move_coefficient[i] = 0.0f;
+		spring_rotation_coefficient[i] = 0.0f;
+	}
 }
 
 void pmx::PmxJointParam::parse(std::istream& stream, PmxSetting* setting)
@@ -899,6 +1135,12 @@ std::size_t pmx::PmxJoint::dump(std::ostream& stream, PmxSetting* setting)
 	return total;
 }
 
+pmx::PmxAnchorRigidBody::PmxAnchorRigidBody() noexcept
+	: related_rigid_body(0)
+	, related_vertex(0)
+	, is_near(false)
+{}
+
 void pmx::PmxAnchorRigidBody::parse(std::istream& stream, PmxSetting* setting)
 {
 	this->related_rigid_body = parseIndex(stream, setting->rigidbody_index_size);
@@ -917,6 +1159,45 @@ std::size_t pmx::PmxAnchorRigidBody::dump(std::ostream& stream, PmxSetting* sett
 	return total;
 }
 
+pmx::PmxSoftBody::PmxSoftBody() noexcept
+	: shape(0)
+	, target_material(0)
+	, group(0)
+	, mask(0)
+	, blink_distance(0)
+	, cluster_count(0)
+	, mass(0.0)
+	, collisioni_margin(0.0)
+	, aero_model(0)
+	, VCF(0.0f)
+	, DP(0.0f)
+	, DG(0.0f)
+	, LF(0.0f)
+	, PR(0.0f)
+	, VC(0.0f)
+	, DF(0.0f)
+	, MT(0.0f)
+	, CHR(0.0f)
+	, KHR(0.0f)
+	, SHR(0.0f)
+	, AHR(0.0f)
+	, SRHR_CL(0.0f)
+	, SKHR_CL(0.0f)
+	, SSHR_CL(0.0f)
+	, SR_SPLT_CL(0.0f)
+	, SK_SPLT_CL(0.0f)
+	, SS_SPLT_CL(0.0f)
+	, V_IT(0)
+	, P_IT(0)
+	, D_IT(0)
+	, C_IT(0)
+	, LST(0.0f)
+	, AST(0.0f)
+	, VST(0.0f)
+	, anchor_count(0)
+	, pin_vertex_count(0)
+{}
+
 void pmx::PmxSoftBody::parse(std::istream& stream, PmxSetting* setting)
 {
 	// 未実装
@@ -927,6 +1208,20 @@ std::size_t pmx::PmxSoftBody::dump(std::ostream& stream, PmxSetting* setting)
 {
 	throw std::runtime_error("Not Implemented Exception");
 }
+
+pmx::PmxModel::PmxModel() noexcept
+	: version(0.0f)
+	, vertex_count(0)
+	, index_count(0)
+	, texture_count(0)
+	, material_count(0)
+	, bone_count(0)
+	, morph_count(0)
+	, frame_count(0)
+	, rigid_body_count(0)
+	, joint_count(0)
+	, soft_body_count(0)
+{}
 
 void pmx::PmxModel::Init()
 {

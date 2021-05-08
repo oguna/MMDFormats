@@ -12,16 +12,7 @@ namespace pmx
 	class PmxSetting
 	{
 	public:
-		PmxSetting()
-			: encoding(0)
-			, uv(0)
-			, vertex_index_size(0)
-			, texture_index_size(0)
-			, material_index_size(0)
-			, bone_index_size(0)
-			, morph_index_size(0)
-			, rigidbody_index_size(0)
-		{}
+		PmxSetting() noexcept;
 
 		/// エンコード方式
 		uint8_t encoding;
@@ -39,6 +30,7 @@ namespace pmx
 		uint8_t morph_index_size;
 		/// 剛体インデックスサイズ
 		uint8_t rigidbody_index_size;
+
 		void parse(std::istream& stream);
 		std::size_t dump(std::ostream& stream);
 	};
@@ -64,9 +56,7 @@ namespace pmx
 	class PmxVertexSkinningBDEF1 : public PmxVertexSkinning
 	{
 	public:
-		PmxVertexSkinningBDEF1()
-			: bone_index(0)
-		{}
+		PmxVertexSkinningBDEF1() noexcept;
 
 		int bone_index;
 		void parse(std::istream& stresam, PmxSetting *setting) override;
@@ -76,11 +66,7 @@ namespace pmx
 	class PmxVertexSkinningBDEF2 : public PmxVertexSkinning
 	{
 	public:
-		PmxVertexSkinningBDEF2()
-			: bone_index1(0)
-			, bone_index2(0)
-			, bone_weight(0.0f)
-		{}
+		PmxVertexSkinningBDEF2() noexcept;
 
 		int bone_index1;
 		int bone_index2;
@@ -92,16 +78,7 @@ namespace pmx
 	class PmxVertexSkinningBDEF4 : public PmxVertexSkinning
 	{
 	public:
-		PmxVertexSkinningBDEF4()
-			: bone_index1(0)
-			, bone_index2(0)
-			, bone_index3(0)
-			, bone_index4(0)
-			, bone_weight1(0.0f)
-			, bone_weight2(0.0f)
-			, bone_weight3(0.0f)
-			, bone_weight4(0.0f)
-		{}
+		PmxVertexSkinningBDEF4() noexcept;
 
 		int bone_index1;
 		int bone_index2;
@@ -111,6 +88,7 @@ namespace pmx
 		float bone_weight2;
 		float bone_weight3;
 		float bone_weight4;
+
 		void parse(std::istream& stresam, PmxSetting *setting)override;
 		std::size_t dump(std::ostream& stream, PmxSetting* setting) override;
 	};
@@ -118,17 +96,7 @@ namespace pmx
 	class PmxVertexSkinningSDEF : public PmxVertexSkinning
 	{
 	public:
-		PmxVertexSkinningSDEF()
-			: bone_index1(0)
-			, bone_index2(0)
-			, bone_weight(0.0f)
-		{
-			for (int i = 0; i < 3; ++i) {
-				sdef_c[i] = 0.0f;
-				sdef_r0[i] = 0.0f;
-				sdef_r1[i] = 0.0f;
-			}
-		}
+		PmxVertexSkinningSDEF() noexcept;
 
 		int bone_index1;
 		int bone_index2;
@@ -136,6 +104,7 @@ namespace pmx
 		float sdef_c[3];
 		float sdef_r0[3];
 		float sdef_r1[3];
+
 		void parse(std::istream& stresam, PmxSetting *setting)override;
 		std::size_t dump(std::ostream& stream, PmxSetting* setting) override;
 	};
@@ -143,16 +112,7 @@ namespace pmx
 	class PmxVertexSkinningQDEF : public PmxVertexSkinning
 	{
 	public:
-		PmxVertexSkinningQDEF()
-			: bone_index1(0)
-			, bone_index2(0)
-			, bone_index3(0)
-			, bone_index4(0)
-			, bone_weight1(0.0f)
-			, bone_weight2(0.0f)
-			, bone_weight3(0.0f)
-			, bone_weight4(0.0f)
-		{}
+		PmxVertexSkinningQDEF() noexcept;
 
 		int bone_index1;
 		int bone_index2;
@@ -170,20 +130,7 @@ namespace pmx
 	class PmxVertex
 	{
 	public:
-		PmxVertex()
-			: edge(0.0f)
-		{
-			uv[0] = uv[1] = 0.0f;
-			for (int i = 0; i < 3; ++i) {
-				positon[i] = 0.0f;
-				normal[i] = 0.0f;
-			}
-			for (int i = 0; i < 4; ++i) {
-				for (int k = 0; k < 4; ++k) {
-					uva[i][k] = 0.0f;
-				}
-			}
-		}
+		PmxVertex() noexcept;
 
 		/// 位置
 		float positon[3];
@@ -199,6 +146,7 @@ namespace pmx
 		std::unique_ptr<PmxVertexSkinning> skinning{ nullptr };
 		/// エッジ倍率
 		float edge;
+
 		void parse(std::istream& stream, PmxSetting *setting);
 		std::size_t dump(std::ostream& stream, PmxSetting* setting);
 	};
@@ -207,26 +155,7 @@ namespace pmx
 	class PmxMaterial
 	{
 	public:
-		PmxMaterial()
-			: specularlity(0.0f)
-			, flag(0)
-			, edge_size(0.0f)
-			, diffuse_texture_index(0)
-			, sphere_texture_index(0)
-			, sphere_op_mode(0)
-			, common_toon_flag(0)
-			, toon_texture_index(0)
-			, index_count(0)
-		{
-			for (int i = 0; i < 3; ++i) {
-				specular[i] = 0.0f;
-				ambient[i] = 0.0f;
-				edge_color[i] = 0.0f;
-			}
-			for (int i = 0; i < 4; ++i) {
-				diffuse[i] = 0.0f;
-			}
-		}
+		PmxMaterial() noexcept;
 
 		/// モデル名
 		std::string material_name;
@@ -260,6 +189,7 @@ namespace pmx
 		std::string memo;
 		/// 頂点インデックス数
 		int index_count;
+
 		void parse(std::istream& stream, PmxSetting *setting);
 		std::size_t dump(std::ostream& stream, PmxSetting* setting);
 	};
@@ -268,15 +198,7 @@ namespace pmx
 	class PmxIkLink
 	{
 	public:
-		PmxIkLink()
-			: link_target(0)
-			, angle_lock(0)
-		{
-			for (int i = 0; i < 3; ++i) {
-				max_radian[i] = 0.0f;
-				min_radian[i] = 0.0f;
-			}
-		}
+		PmxIkLink() noexcept;
 
 		/// リンクボーンインデックス
 		int link_target;
@@ -294,27 +216,7 @@ namespace pmx
 	class PmxBone
 	{
 	public:
-		PmxBone()
-			: parent_index(0)
-			, level(0)
-			, bone_flag(0)
-			, target_index(0)
-			, grant_parent_index(0)
-			, grant_weight(0.0f)
-			, key(0)
-			, ik_target_bone_index(0)
-			, ik_loop(0)
-			, ik_loop_angle_limit(0.0f)
-			, ik_link_count(0)
-		{
-			for (int i = 0; i < 3; ++i) {
-				position[i] = 0.0f;
-				offset[i] = 0.0f;
-				lock_axis_orientation[i] = 0.0f;
-				local_axis_x_orientation[i] = 0.0f;
-				local_axis_y_orientation[i] = 0.0f;
-			}
-		}
+		PmxBone() noexcept;
 
 		/// ボーン名
 		std::string bone_name;
@@ -392,15 +294,10 @@ namespace pmx
 	class PmxMorphVertexOffset : public PmxMorphOffset
 	{
 	public:
-		PmxMorphVertexOffset()
-			: vertex_index(0)
-		{
-			for (int i = 0; i < 3; ++i) {
-				position_offset[i] = 0.0f;
-			}
-		}
+		PmxMorphVertexOffset() noexcept;
 		int vertex_index;
 		float position_offset[3];
+
 		void parse(std::istream& stream, PmxSetting *setting) override;
 		std::size_t dump(std::ostream& stream, PmxSetting* setting)override;
 	};
@@ -408,15 +305,10 @@ namespace pmx
 	class PmxMorphUVOffset : public PmxMorphOffset
 	{
 	public:
-		PmxMorphUVOffset()
-			: vertex_index(0)
-		{
-			for (int i = 0; i < 4; ++i) {
-				uv_offset[i] = 0.0f;
-			}
-		}
+		PmxMorphUVOffset() noexcept;
 		int vertex_index;
 		float uv_offset[4];
+
 		void parse(std::istream& stream, PmxSetting *setting) override;
 		std::size_t dump(std::ostream& stream, PmxSetting* setting)override;
 	};
@@ -424,19 +316,11 @@ namespace pmx
 	class PmxMorphBoneOffset : public PmxMorphOffset
 	{
 	public:
-		PmxMorphBoneOffset()
-			: bone_index(0)
-		{
-			for (int i = 0; i < 3; ++i) {
-				translation[i] = 0.0f;
-			}
-			for (int i = 0; i < 4; ++i) {
-				rotation[i] = 0.0f;
-			}
-		}
+		PmxMorphBoneOffset() noexcept;
 		int bone_index;
 		float translation[3];
 		float rotation[4];
+
 		void parse(std::istream& stream, PmxSetting *setting) override;
 		std::size_t dump(std::ostream& stream, PmxSetting* setting)override;
 	};
@@ -444,22 +328,8 @@ namespace pmx
 	class PmxMorphMaterialOffset : public PmxMorphOffset
 	{
 	public:
-		PmxMorphMaterialOffset()
-			: specularity(0.0f)
-			, edge_size(0.0f)
-		{
-			for (int i = 0; i < 3; ++i) {
-				specular[i] = 0.0f;
-				ambient[i] = 0.0f;
-			}
-			for (int i = 0; i < 4; ++i) {
-				diffuse[i] = 0.0f;
-				edge_color[i] = 0.0f;
-				texture_argb[i] = 0.0f;
-				sphere_texture_argb[i] = 0.0f;
-				toon_texture_argb[i] = 0.0f;
-			}
-		}
+		PmxMorphMaterialOffset()noexcept;
+
 		int material_index = -1;
 		uint8_t offset_operation = -1;
 		float diffuse[4];
@@ -478,10 +348,7 @@ namespace pmx
 	class PmxMorphGroupOffset : public PmxMorphOffset
 	{
 	public:
-		PmxMorphGroupOffset()
-			: morph_index(0)
-			, morph_weight(0.0f)
-		{}
+		PmxMorphGroupOffset() noexcept;
 		int morph_index;
 		float morph_weight;
 		void parse(std::istream& stream, PmxSetting *setting) override;
@@ -491,10 +358,8 @@ namespace pmx
 	class PmxMorphFlipOffset : public PmxMorphOffset
 	{
 	public:
-		PmxMorphFlipOffset()
-			: morph_index(0)
-			, morph_value(0.0f)
-		{}
+		PmxMorphFlipOffset() noexcept;
+
 		int morph_index;
 		float morph_value;
 		void parse(std::istream& stream, PmxSetting *setting) override;
@@ -504,15 +369,8 @@ namespace pmx
 	class PmxMorphImpulseOffset : public PmxMorphOffset
 	{
 	public:
-		PmxMorphImpulseOffset()
-			: rigid_body_index(0)
-			, is_local(0)
-		{
-			for (int i = 0; i < 3; ++i) {
-				velocity[i] = 0.0f;
-				angular_torque[i] = 0.0f;
-			}
-		}
+		PmxMorphImpulseOffset() noexcept;
+
 		int rigid_body_index;
 		uint8_t is_local;
 		float velocity[3];
@@ -525,10 +383,8 @@ namespace pmx
 	class PmxMorph
 	{
 	public:
-		PmxMorph()
-			: offset_count(0)
-		{
-		}
+		PmxMorph() noexcept;
+
 		/// モーフ名
 		std::string morph_name;
 		/// モーフ英名
@@ -561,11 +417,8 @@ namespace pmx
 	class PmxFrameElement
 	{
 	public:
-		PmxFrameElement()
-			: element_target(0)
-			, index(0)
-		{
-		}
+		PmxFrameElement() noexcept;
+
 		/// 要素対象
 		uint8_t element_target;
 		/// 要素対象インデックス
@@ -578,11 +431,8 @@ namespace pmx
 	class PmxFrame
 	{
 	public:
-		PmxFrame()
-			: frame_flag(0)
-			, element_count(0)
-		{
-		}
+		PmxFrame() noexcept;
+
 		/// 枠名
 		std::string frame_name;
 		/// 枠英名
@@ -600,24 +450,8 @@ namespace pmx
 	class PmxRigidBody
 	{
 	public:
-		PmxRigidBody()
-			: target_bone(0)
-			, group(0)
-			, mask(0)
-			, shape(0)
-			, mass(0.0f)
-			, move_attenuation(0.0f)
-			, rotation_attenuation(0.0f)
-			, repulsion(0.0f)
-			, friction(0.0f)
-			, physics_calc_type(0)
-		{
-			for (int i = 0; i < 3; ++i) {
-				size[i] = 0.0f;
-				position[i] = 0.0f;
-				orientation[i] = 0.0f;
-			}
-		}
+		PmxRigidBody() noexcept;
+
 		/// 剛体名
 		std::string rigid_body_name;
 		/// 剛体英名
@@ -656,21 +490,8 @@ namespace pmx
 	class PmxJointParam
 	{
 	public:
-		PmxJointParam()
-			: rigid_body1(0)
-			, rigid_body2(0)
-		{
-			for (int i = 0; i < 3; ++i) {
-				position[i] = 0.0f;
-				orientaiton[i] = 0.0f;
-				move_limitation_min[i] = 0.0f;
-				move_limitation_max[i] = 0.0f;
-				rotation_limitation_min[i] = 0.0f;
-				rotation_limitation_max[i] = 0.0f;
-				spring_move_coefficient[i] = 0.0f;
-				spring_rotation_coefficient[i] = 0.0f;
-			}
-		}
+		PmxJointParam() noexcept;
+
 		int rigid_body1;
 		int rigid_body2;
 		float position[3];
@@ -706,11 +527,8 @@ namespace pmx
 	class PmxAnchorRigidBody
 	{
 	public:
-		PmxAnchorRigidBody()
-			: related_rigid_body(0)
-			, related_vertex(0)
-			, is_near(false)
-		{}
+		PmxAnchorRigidBody() noexcept;
+
 		int related_rigid_body;
 		int related_vertex;
 		bool is_near;
@@ -721,44 +539,8 @@ namespace pmx
 	class PmxSoftBody
 	{
 	public:
-		PmxSoftBody()
-			: shape(0)
-			, target_material(0)
-			, group(0)
-			, mask(0)
-			, blink_distance(0)
-			, cluster_count(0)
-			, mass(0.0)
-			, collisioni_margin(0.0)
-			, aero_model(0)
-			, VCF(0.0f)
-			, DP(0.0f)
-			, DG(0.0f)
-			, LF(0.0f)
-			, PR(0.0f)
-			, VC(0.0f)
-			, DF(0.0f)
-			, MT(0.0f)
-			, CHR(0.0f)
-			, KHR(0.0f)
-			, SHR(0.0f)
-			, AHR(0.0f)
-			, SRHR_CL(0.0f)
-			, SKHR_CL(0.0f)
-			, SSHR_CL(0.0f)
-			, SR_SPLT_CL(0.0f)
-			, SK_SPLT_CL(0.0f)
-			, SS_SPLT_CL(0.0f)
-			, V_IT(0)
-			, P_IT(0)
-			, D_IT(0)
-			, C_IT(0)
-			, LST(0.0f)
-			, AST(0.0f)
-			, VST(0.0f)
-			, anchor_count(0)
-			, pin_vertex_count(0)
-		{}
+		PmxSoftBody() noexcept;
+
 		std::string soft_body_name;
 		std::string soft_body_english_name;
 		uint8_t shape;
@@ -808,19 +590,7 @@ namespace pmx
 	class PmxModel
 	{
 	public:
-		PmxModel()
-			: version(0.0f)
-			, vertex_count(0)
-			, index_count(0)
-			, texture_count(0)
-			, material_count(0)
-			, bone_count(0)
-			, morph_count(0)
-			, frame_count(0)
-			, rigid_body_count(0)
-			, joint_count(0)
-			, soft_body_count(0)
-		{}
+		PmxModel() noexcept;
 
 		/// バージョン
 		float version;
