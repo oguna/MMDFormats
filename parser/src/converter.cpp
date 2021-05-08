@@ -1,4 +1,4 @@
-#include "pmx2txt/parser/converter.hpp"
+#include "pmx2txt/parser/converter.h"
 
 #ifdef MSVC
 #include "javacommons/strconv.h"

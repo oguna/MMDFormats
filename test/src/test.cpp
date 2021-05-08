@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::istream is(&fb);
-    pmx::PmxModel x;
+    pmx::Model x;
     x.parse(is);
 
     std::ofstream tmpOut("tmp.bin", std::ios::out|std::ios::binary);
