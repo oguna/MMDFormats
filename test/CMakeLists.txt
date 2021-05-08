@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.14)
+cmake_minimum_required (VERSION 3.13)
 
 project(test)
 
@@ -8,12 +8,12 @@ file(GLOB_RECURSE test_hpp include/*.hpp)
 add_executable(${PROJECT_NAME} ${test_cpp})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/include
 )
 
-target_compile_features(${PROJECT_NAME} PUBLIC
-    cxx_std_17
-)
+#target_compile_features(${PROJECT_NAME} PUBLIC
+#    cxx_std_17
+#)
 
 target_compile_options(${PROJECT_NAME} PRIVATE
     "$<$<C_COMPILER_ID:MSVC>:/utf-8>"

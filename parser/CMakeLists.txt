@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.14)
+cmake_minimum_required (VERSION 3.13)
 
 project(parser
     LANGUAGES    CXX
@@ -6,34 +6,39 @@ project(parser
 )
 
 include(GNUInstallDirs)
+set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
 option(PMX2TXT_INSTALL "Install the parser" ON)
-
-if(NOT ${MSVC})
-message(FATAL_ERROR "PMX2TXT::${PROJECT_NAME} works in Windows environment only!")
-endif(NOT ${MSVC})
 
 add_library(${PROJECT_NAME})
 add_library(PMX2TXT::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
-target_sources(${PROJECT_NAME}
-PUBLIC
-    include/pmx2txt/parser/Pmd.h
+target_sources(${PROJECT_NAME} PRIVATE
     include/pmx2txt/parser/Pmx.h
-    include/pmx2txt/parser/Vmd.h
-PRIVATE
-    include/javacommons/strconv.h
-    src/Pmd.cpp
+    include/pmx2txt/parser/converter.hpp
     src/Pmx.cpp
+    src/converter.cpp
 )
 
+if(MSVC)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC MSVC)
+    target_sources(${PROJECT_NAME} PRIVATE
+        include/javacommons/strconv.h
+    )
+else(MSVC)
+    find_package(ICU COMPONENTS data uc REQUIRED)
+    target_link_libraries(${PROJECT_NAME} ICU::data ICU::uc)
+endif(MSVC)
+
 target_include_directories(${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>  
     $<INSTALL_INTERFACE:include>
 )
 
-target_compile_features(${PROJECT_NAME} PUBLIC
-    cxx_std_17
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    CMAKE_CXX_STANDARD 17
+    CMAKE_CXX_STANDARD_REQUIRED ON
+    CMAKE_CXX_EXTENSIONS OFF
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE

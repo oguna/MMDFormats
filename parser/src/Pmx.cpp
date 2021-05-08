@@ -2,7 +2,7 @@
 #include <utility>
 
 #include "pmx2txt/parser/Pmx.h"
-#include "javacommons/strconv.h"
+#include "pmx2txt/parser/converter.hpp"
 
 namespace {
 	/// インデックス値を読み込む
@@ -80,44 +80,36 @@ namespace {
 		{
 			return std::string("");
 		}
-		buffer.reserve(size);
+		buffer.resize(size);
 		stream.read((char*)buffer.data(), size);
 		if (encoding == 0)
 		{
 			// UTF16
-			std::wstring tmpwstr(
-				static_cast<wchar_t*>(
-					static_cast<void*>(buffer.data())
-					), size / 2);
-			return wide_to_utf8(tmpwstr);
+			const auto tmp = pmx2txt::utf16_to_utf8(buffer);
+			return std::move(std::string(tmp.cbegin(), tmp.cend()));
 		}
 		else
 		{
 			// UTF8
-			return std::string(buffer.data(), size);
+			return std::move(std::string(buffer.data(), size));
 		}
 	}
 
 	size_t dumpString(std::ostream& stream, const std::string& str, uint8_t encoding)
 	{
-		size_t total{ 0 };
-		std::vector<uint8_t> buf{};
+		std::vector<char> buf{};
 
 		if (encoding == 0)
 		{
 			// UTF16
-			std::wstring utf16str = utf8_to_wide(str);
-
-			total = utf16str.length() * (sizeof(wchar_t) / sizeof(uint8_t));
-			buf.resize(total);
-			std::memcpy(buf.data(), utf16str.data(), total);
+			buf = pmx2txt::utf8_to_utf16(std::vector<char>(str.cbegin(), str.cend()));
+			const std::wstring hoge(reinterpret_cast<const wchar_t*>(buf.data()), buf.size()/2);
 		}
 		else
 		{
-			total = str.length();
-			buf.resize(total);
-			std::memcpy(buf.data(), str.data(), total);
+			buf = std::vector<char>(str.cbegin(), str.cend());
 		}
+		int total = buf.size();
 		stream.write(static_cast<char*>(static_cast<void*>(&total)), sizeof(int));
 		stream.write(static_cast<char*>(static_cast<void*>(buf.data())), buf.size());
 		return total + sizeof(int);
