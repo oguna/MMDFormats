@@ -1,6 +1,12 @@
 ﻿# MikuMikuFormats
-
+ 
 [日本語README](README_Ja.md)
+
+## Important
+
+The code in this project was introduced in [assimp](https://github.com/assimp/assimp).
+Assimp keeps itself maintenance.
+Please use the code in assimp because of its safety.
 
 ## General
 
