@@ -1,11 +1,15 @@
 #pragma once
+
 #include <vector>
 #include <string>
 #include <memory>
 #include <iostream>
 #include <fstream>
 #include <ostream>
-namespace vmd{
+
+namespace vmd
+{
+	/// ボーンフレーム
 	class VmdBoneFrame
 	{
 	public:
@@ -45,8 +49,11 @@ namespace vmd{
 	class VmdFaceFrame
 	{
 	public:
+		/// 表情名
 		std::string face_name;
+		/// 表情の重み
 		float weight;
+		/// フレーム番号
 		uint32_t frame;
 
 		void Read(std::istream* stream)
@@ -66,6 +73,7 @@ namespace vmd{
 		}
 	};
 
+	/// カメラフレーム
 	class VmdCameraFrame
 	{
 	public:
@@ -77,12 +85,12 @@ namespace vmd{
 		float position[3];
 		/// 回転
 		float orientation[3];
-
+		/// 補間曲線
 		char interpolation[6][4];
-
-		int angle;
-
-		uint8_t isPerspective;
+		/// 視野角
+		float angle;
+		/// 不明データ
+		char unknown[3];
 
 		void Read(std::istream *stream)
 		{
@@ -91,8 +99,8 @@ namespace vmd{
 			stream->read((char*) position, sizeof(float) * 3);
 			stream->read((char*) orientation, sizeof(float) * 3);
 			stream->read((char*) interpolation, sizeof(char) * 24);
-			stream->read((char*) &angle, sizeof(int));
-			stream->read((char*) &isPerspective, sizeof(char) );
+			stream->read((char*) &angle, sizeof(float));
+			stream->read((char*) unknown, sizeof(char) * 3);
 		}
 
 		void Write(std::ostream *stream)
@@ -102,20 +110,20 @@ namespace vmd{
 			stream->write((char*)position, sizeof(float) * 3);
 			stream->write((char*)orientation, sizeof(float) * 3);
 			stream->write((char*)interpolation, sizeof(char) * 24);
-			stream->write((char*)&angle, sizeof(int));
-			stream->write((char*)&isPerspective, sizeof(char));
+			stream->write((char*)&angle, sizeof(float));
+			stream->write((char*)unknown, sizeof(char) * 3);
 		}
 	};
 
-
+	/// ライトフレーム
 	class VmdLightFrame
 	{
 	public:
-
+		/// フレーム番号
 		int frame;
-
+		/// 色
 		float color[3];
-
+		/// 位置
 		float position[3];
 
 		void Read(std::istream* stream)
@@ -133,7 +141,7 @@ namespace vmd{
 		}
 	};
 
-
+	/// IKの有効無効
 	class VmdIkEnable
 	{
 	public:
@@ -180,19 +188,26 @@ namespace vmd{
 		}
 	};
 
-
+	/// VMDモーション
 	class VmdMotion
 	{
 	public:
+		/// モデル名
 		std::string model_name;
+		/// バージョン
 		int version;
+		/// ボーンフレーム
 		std::vector<VmdBoneFrame> bone_frames;
+		/// 表情フレーム
 		std::vector<VmdFaceFrame> face_frames;
+		/// カメラフレーム
 		std::vector<VmdCameraFrame> camera_frames;
+		/// ライトフレーム
 		std::vector<VmdLightFrame> light_frames;
+		/// IKフレーム
 		std::vector<VmdIkFrame> ik_frames;
 
-		static std::shared_ptr<VmdMotion> LoadFromFile(char const *filename)
+		static std::unique_ptr<VmdMotion> LoadFromFile(char const *filename)
 		{
 			std::ifstream stream(filename, std::ios::binary);
 			auto result = LoadFromStream(&stream);
@@ -200,11 +215,11 @@ namespace vmd{
 			return result;
 		}
 
-		static std::shared_ptr<VmdMotion> LoadFromStream(std::ifstream *stream)
+		static std::unique_ptr<VmdMotion> LoadFromStream(std::ifstream *stream)
 		{
 
 			char buffer[30];
-			auto result = std::make_shared<VmdMotion>();
+			auto result = std::make_unique<VmdMotion>();
 
 			// magic and version
 			stream->read((char*) buffer, 30);
@@ -278,7 +293,7 @@ namespace vmd{
 			return result;
 		}
 
-		bool SaveToFile(const std::wstring& filename)
+		bool SaveToFile(const std::u16string& filename)
 		{
 			std::ofstream stream(filename.c_str(), std::ios::binary);
 			auto result = SaveToStream(&stream);
