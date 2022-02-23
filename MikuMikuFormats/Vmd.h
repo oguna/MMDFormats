@@ -88,9 +88,9 @@ namespace vmd
 		/// 補間曲線
 		char interpolation[6][4];
 		/// 視野角
-		float angle;
-		/// 不明データ
-		char unknown[3];
+		int angle;
+
+		uint8_t isPerspective;
 
 		void Read(std::istream *stream)
 		{
@@ -99,8 +99,8 @@ namespace vmd
 			stream->read((char*) position, sizeof(float) * 3);
 			stream->read((char*) orientation, sizeof(float) * 3);
 			stream->read((char*) interpolation, sizeof(char) * 24);
-			stream->read((char*) &angle, sizeof(float));
-			stream->read((char*) unknown, sizeof(char) * 3);
+			stream->read((char*) &angle, sizeof(int));
+			stream->read((char*) &isPerspective, sizeof(char) );
 		}
 
 		void Write(std::ostream *stream)
@@ -110,8 +110,8 @@ namespace vmd
 			stream->write((char*)position, sizeof(float) * 3);
 			stream->write((char*)orientation, sizeof(float) * 3);
 			stream->write((char*)interpolation, sizeof(char) * 24);
-			stream->write((char*)&angle, sizeof(float));
-			stream->write((char*)unknown, sizeof(char) * 3);
+			stream->write((char*)&angle, sizeof(int));
+			stream->write((char*)&isPerspective, sizeof(char));
 		}
 	};
 
